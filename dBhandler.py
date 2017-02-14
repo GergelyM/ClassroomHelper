@@ -5,9 +5,10 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 
-#from tinydb import Query
-#from tinydb import TinyDB
-import tinydb
+from tinydb import Query
+from tinydb import TinyDB
+from datetime import *
+
 
 #check and create db
 
