@@ -59,3 +59,4 @@ def genStdNum(name, surname, dateOfBirth):
     uniqueID = "%s%s%s%s%s" % (currentYear,fInitial+sInitial,dof[0],dof[1],dof[2])
     print(uniqueID)
 
+#should be committed
