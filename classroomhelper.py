@@ -2,12 +2,12 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 
-import DBhandler
+from dBhandler import *
 
 
 if __name__ == "__main__":
 
     #print("Hello World")
-    genStdNum("name", "surname", "dateOfBirth")
+    genStdNum("John", "Smith", "2-14-1999")
     
     
