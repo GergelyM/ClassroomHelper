@@ -8,7 +8,7 @@ from dBhandler import *
 if __name__ == "__main__":
 
     #print("Hello World")
-    genStdNum("John", "Smith", "2-14-1999")
+    genStdNum("John", "Smith", "02-14-1999")
     # y
     
     

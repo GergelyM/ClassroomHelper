@@ -8,19 +8,24 @@
 from tinydb import Query
 from tinydb import TinyDB
 from datetime import *
-
+import os
 
 #check and create db
 #TODO-Gary check if folder exist, create one if not
 #TODO-Gary check if the file exists, catch exceptions, I think the basic code does it anyway
 def commitDB ():
-    #not used yet
-    return
+    #as 15-02 12:00 it is fully functional on linux
+    if not os.path.isdir("./db") :
+        os.makedirs("./db")
+        db = TinyDB('./db/crDB.json')
+    else:
+        db = TinyDB('./db/crDB.json')
+    return db
 
 #create the main DB for our project
-crDB = TinyDB('./db/crDB.json')
-print("just passed create/reach DB")
+crDB = commitDB()
 
+#some hint for tinyDB usage
 #create and update tables. They behave just the same as the TinyDB class.
 #table = db.table('name')
 #table.insert({'value': True})
@@ -39,11 +44,14 @@ tableGrade = crDB.table('GRADE')
 tableModule = crDB.table('MODULE')
 tableTeachedBy = crDB.table('TEACHEDBY')
 
+
+#TODO-Gary check if studentID exist
 tableStudent.insert({'studentID':'161015234567',
                     'studentSurname':'Smith',
                     'studentName':'John',
                     'studentDateOfBirth':'02-12-1999',
                     'password':'p@ssword'})
+
 
 #TODO-Gary write a generic, unique userID generator
 #use given data find in DB: initials, date of birth, and current date
@@ -52,11 +60,10 @@ def genStdNum(name, surname, dateOfBirth):
     fInitial = ord(name[0])
     sInitial = ord(surname[0])
     dof = dateOfBirth.split("-")
-    dof[2] = dof[2].strftime("%y")
-
+    dof[2]=dof[2][-2::]
 
     #add things up
     uniqueID = "%s%s%s%s%s" % (currentYear,fInitial+sInitial,dof[0],dof[1],dof[2])
-    print(uniqueID)
+    return uniqueID
 
 #should be committed
