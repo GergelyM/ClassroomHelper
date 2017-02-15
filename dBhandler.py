@@ -158,21 +158,27 @@ cc.execute('SELECT count(*) FROM student') #count all rows in student table
 isStudentExists = cc.fetchone()[0]
 if isStudentExists == 0 :
     populateStudentTable(20)
-else:
-    print("superb")
+#else:
+#    print("superb")
 cc.execute('SELECT count(*) FROM student') #count all rows in module table
 isModuleExists = cc.fetchone()[0]
 if isModuleExists == 0:
     populateModuleTable()
-else:
-    print("awesome")
+#else:
+#    print("awesome")
 
 
 
 
 #do some test queries from
 c = crDB.cursor()
-c.execute('SELECT * FROM module')
+c.execute('SELECT * FROM module ORDER BY random() LIMIT 5')
 allRows = c.fetchall()
+print("5 Sample record from 'module' table")
+for row in allRows:
+    print(row)
+c.execute('SELECT * FROM student ORDER BY random() LIMIT 5')
+allRows = c.fetchall()
+print("5 Sample record from 'student' table")
 for row in allRows:
     print(row)
