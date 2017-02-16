@@ -5,7 +5,7 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 
-#FCK tinyDB, ditched for good, too complicated to be "small and easy"
+#FCK tinyDB, ditched for good, too complicated to be called "small and easy"
 
 import sqlite3
 from datetime import *
@@ -39,9 +39,6 @@ def checkNcreateDB():
     else:
         crDB = sqlite3.connect('db/crDB')
     return crDB
-
-#start up DB
-crDB = checkNcreateDB()
 
 #TODO-Gary write a generic, unique userID generator // DONE for students
 #use given data find in DB: initials, date of birth, and current date
@@ -173,40 +170,6 @@ def populateGradeTable(x):
             fallouts.append(randomStudentID)
     crDB.commit()
 
-
-#populate table, if table is EMPTY
-cc = crDB.cursor()
-cc.execute('SELECT count(*) FROM student') #count all rows in student table
-isStudentExists = cc.fetchone()[0]
-if isStudentExists == 0 :
-    populateStudentTable(20)
-#else:
-#    print("superb")
-cc.execute('SELECT count(*) FROM student') #count all rows in module table
-isModuleExists = cc.fetchone()[0]
-if isModuleExists == 0:
-    populateModuleTable()
-#else:
-#    print("awesome")
-cc.execute('SELECT count(*) FROM teacher') #count all rows in teacher table
-isTeacherExists = cc.fetchone()[0]
-if isTeacherExists == 0:
-    populateTeacherTable(6)
-#else:
-#    print("neat")
-cc.execute('SELECT count(*) FROM teachedby') #count all rows in teacher table
-isTeachedbyExists = cc.fetchone()[0]
-if isTeachedbyExists == 0:
-    populateTeachedbyTable(7)
-#else:
-#    print("neat")
-cc.execute('SELECT count(*) FROM grade') #count all rows in teacher table
-isGradeExists = cc.fetchone()[0]
-if isGradeExists == 0:
-    populateGradeTable(7)
-#else:
-#    print("neat")
-
 #get some sample data out of the DB
 def testQueries():
     #do some test queries from
@@ -257,6 +220,46 @@ def retrievePW(userID):
         # if len(rows) != 0 :
         #     return rows
     return rows
+
+#not used at this stage, and probably won't as this file supped to be a module only
+#if __name__ == "__main__":
+
+#start up DB
+crDB = checkNcreateDB()
+
+#populate table, if table is EMPTY
+cc = crDB.cursor()
+cc.execute('SELECT count(*) FROM student') #count all rows in student table
+isStudentExists = cc.fetchone()[0]
+if isStudentExists == 0 :
+    populateStudentTable(20)
+#else:
+#    print("superb")
+cc.execute('SELECT count(*) FROM student') #count all rows in module table
+isModuleExists = cc.fetchone()[0]
+if isModuleExists == 0:
+    populateModuleTable()
+#else:
+#    print("awesome")
+cc.execute('SELECT count(*) FROM teacher') #count all rows in teacher table
+isTeacherExists = cc.fetchone()[0]
+if isTeacherExists == 0:
+    populateTeacherTable(6)
+#else:
+#    print("neat")
+cc.execute('SELECT count(*) FROM teachedby') #count all rows in teacher table
+isTeachedbyExists = cc.fetchone()[0]
+if isTeachedbyExists == 0:
+    populateTeachedbyTable(7)
+#else:
+#    print("neat")
+cc.execute('SELECT count(*) FROM grade') #count all rows in teacher table
+isGradeExists = cc.fetchone()[0]
+if isGradeExists == 0:
+    populateGradeTable(7)
+#else:
+#    print("neat")
+
 
 
 
