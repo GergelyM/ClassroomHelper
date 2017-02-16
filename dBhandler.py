@@ -233,32 +233,26 @@ cc.execute('SELECT count(*) FROM student') #count all rows in student table
 isStudentExists = cc.fetchone()
 if isStudentExists == 0 :
     populateStudentTable(20)
-#else:
-#    print("superb")
-cc.execute('SELECT count(*) FROM student') #count all rows in module table
+
+cc.execute('SELECT count(*) FROM module') #count all rows in module table
 isModuleExists = cc.fetchone()
 if isModuleExists == 0:
     populateModuleTable()
-#else:
-#    print("awesome")
+
 cc.execute('SELECT count(*) FROM teacher') #count all rows in teacher table
 isTeacherExists = cc.fetchone()
 if isTeacherExists == 0:
     populateTeacherTable(6)
-#else:
-#    print("neat")
+
 cc.execute('SELECT count(*) FROM teachedby') #count all rows in teacher table
 isTeachedbyExists = cc.fetchone()
 if isTeachedbyExists == 0:
     populateTeachedbyTable(7)
-#else:
-#    print("neat")
+
 cc.execute('SELECT count(*) FROM grade') #count all rows in teacher table
 isGradeExists = cc.fetchone()
 if isGradeExists == 0:
     populateGradeTable(7)
-#else:
-#    print("neat")'''
 
 
 
