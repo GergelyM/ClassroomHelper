@@ -13,32 +13,7 @@ import os
 from random import randint
 
 
-#check and create db
-#renamed to fit better to SqLite
-def checkNcreateDB():
-    #as 15-02 12:00 it is fully functional on Ubuntu 16.04
-    if not os.path.isdir("./db") :
-        os.makedirs("./db")
-        crDB = sqlite3.connect('db/crDB')
-        # cursor = crDB.cursor()   needed to interact with the DB
-        cursor = crDB.cursor()
-        # simplified version no contact details saved now
-        # cursor.execute('''CREATE TABLE student( id INTEGER PRIMARY KEY AUTOINCREMENT, studentID TEXT UNIQUE, studentTitle TEXT, studentName TEXT, studentSurname TEXT, studentDateOfBirth TEXT, studentPhone TEXT, studentEmail TEXT UNIQUE, studentPassword TEXT) ''')
-        cursor.execute(
-            '''CREATE TABLE student( id INTEGER PRIMARY KEY AUTOINCREMENT, studentID TEXT UNIQUE, studentTitle TEXT, studentName TEXT, studentSurname TEXT, studentDateOfBirth TEXT, studentPassword TEXT) ''')
-        # cursor.execute('''CREATE TABLE teacher( id INTEGER PRIMARY KEY AUTOINCREMENT, teacherID TEXT UNIQUE, teacherTitle TEXT, teacherName TEXT, teacherSurname TEXT, teacherPhone TEXT, teacherEmail TEXT UNIQUE, teacherPassword TEXT) ''')
-        cursor.execute(
-            '''CREATE TABLE teacher( id INTEGER PRIMARY KEY AUTOINCREMENT, teacherID TEXT UNIQUE, teacherTitle TEXT, teacherName TEXT, teacherSurname TEXT, teacherPassword TEXT) ''')
-        cursor.execute(
-            '''CREATE TABLE module( id INTEGER PRIMARY KEY AUTOINCREMENT, moduleCode TEXT UNIQUE, moduleName TEXT, moduleDescription TEXT ) ''')
-        cursor.execute(
-            '''CREATE TABLE grade(grade INTEGER, year INTEGER, semester INTEGER, studentID TEXT, moduleCode TEXT, FOREIGN KEY(studentID) REFERENCES student(studentID), FOREIGN KEY(moduleCode) REFERENCES module(moduleCode), PRIMARY KEY (studentID, moduleCode) ) ''')
-        cursor.execute(
-            '''CREATE TABLE teachedby(year INTEGER, semester INTEGER, teacherID TEXT, moduleCode TEXT, FOREIGN KEY(teacherID) REFERENCES teacher(teacherID), FOREIGN KEY(moduleCode) REFERENCES module(moduleCode), PRIMARY KEY (teacherID, moduleCode) ) ''')
-        crDB.commit()
-    else:
-        crDB = sqlite3.connect('db/crDB')
-    return crDB
+
 
 #TODO-Gary write a generic, unique userID generator // DONE for students
 #use given data find in DB: initials, date of birth, and current date
@@ -92,6 +67,7 @@ def generateRandomPerson(role):
 #TODO-Gary check and add real password later
 #renamed to reflect is function better from: insertXRndStudent(x) to populateStudentTable(x)
 def populateStudentTable(x):
+    crDB = sqlite3.connect('db/crDB.db')
     studentBatch = []
     i=0
     while (i <= x):
@@ -105,6 +81,7 @@ def populateStudentTable(x):
 
 
 def populateModuleTable():
+    crDB = sqlite3.connect('db/crDB.db')
     #TODO-Gary create an algorithm generates module uniqueID, eid could be used for that
     #TODO-Gary describe modulecode //DONE
     # id, moduleCode TEXT, moduleName TEXT, moduleDescription TEXT
@@ -122,6 +99,7 @@ def populateModuleTable():
     # exception handling would be a good solution (try/except)
 
 def populateTeacherTable(x):
+    crDB = sqlite3.connect('db/crDB.db')
     teacherBatch = []
     i = 0
     while (i <= x):
@@ -140,6 +118,7 @@ def populateTeacherTable(x):
 #add some teachedby rows
 #year, semester, teacherID, moduleCode, FOREIGN KEY(teacherID), FOREIGN KEY(moduleCode), PRIMARY KEY (teacherID, moduleCode)
 def populateTeachedbyTable(x):
+    crDB = sqlite3.connect('db/crDB.db')
     c4 = crDB.cursor()
     i = 0
     for i in range(0,x):
@@ -153,6 +132,7 @@ def populateTeachedbyTable(x):
 
 def populateGradeTable(x):
     #grade, year, semester, studentID, moduleCode
+    crDB = sqlite3.connect('db/crDB.db')
     c5 = crDB.cursor()
     i = 0
     fallouts = []
@@ -208,6 +188,7 @@ def testQueries():
 def retrievePW(userID):
     uID = []
     uID.append(userID)
+    crDB = sqlite3.connect('db/crDB.db')
     cd = crDB.cursor()
     if (userID[0:2:] == "st"):
         cd.execute('SELECT teacherPassword FROM teacher WHERE teacherID = ?', uID)
@@ -221,38 +202,98 @@ def retrievePW(userID):
         #     return rows
     return rows
 
-#not used at this stage, and probably won't as this file supped to be a module only
+#not used at this stage, and probably won't be, as this file supped to be a module only
 #if __name__ == "__main__":
 
+#TODO-Gary write an init function to
+#check existence of folder -> create folder
+#check existence of file -> create file
+#check existence of tables one by one -> create tables
+#check table(s) for records -> populate table(s)
+
+def createTables():
+    crDB = sqlite3.connect('db/crDB.db')
+    cursor = crDB.cursor()
+    # simplified version no contact details saved now
+    # cursor.execute('''CREATE TABLE student( id INTEGER PRIMARY KEY AUTOINCREMENT, studentID TEXT UNIQUE, studentTitle TEXT, studentName TEXT, studentSurname TEXT, studentDateOfBirth TEXT, studentPhone TEXT, studentEmail TEXT UNIQUE, studentPassword TEXT) ''')
+    # cursor.execute('''CREATE TABLE teacher( id INTEGER PRIMARY KEY AUTOINCREMENT, teacherID TEXT UNIQUE, teacherTitle TEXT, teacherName TEXT, teacherSurname TEXT, teacherPhone TEXT, teacherEmail TEXT UNIQUE, teacherPassword TEXT) ''')
+    cursor.execute(
+        '''CREATE TABLE IF NOT EXISTS student( id INTEGER PRIMARY KEY AUTOINCREMENT, studentID TEXT UNIQUE, studentTitle TEXT, studentName TEXT, studentSurname TEXT, studentDateOfBirth TEXT, studentPassword TEXT) ''')
+    cursor.execute(
+        '''CREATE TABLE IF NOT EXISTS teacher( id INTEGER PRIMARY KEY AUTOINCREMENT, teacherID TEXT UNIQUE, teacherTitle TEXT, teacherName TEXT, teacherSurname TEXT, teacherPassword TEXT) ''')
+    cursor.execute(
+        '''CREATE TABLE IF NOT EXISTS module( id INTEGER PRIMARY KEY AUTOINCREMENT, moduleCode TEXT UNIQUE, moduleName TEXT, moduleDescription TEXT ) ''')
+    cursor.execute(
+        '''CREATE TABLE IF NOT EXISTS grade(grade INTEGER, year INTEGER, semester INTEGER, studentID TEXT, moduleCode TEXT, FOREIGN KEY(studentID) REFERENCES student(studentID), FOREIGN KEY(moduleCode) REFERENCES module(moduleCode), PRIMARY KEY (studentID, moduleCode) ) ''')
+    cursor.execute(
+        '''CREATE TABLE IF NOT EXISTS teachedby(year INTEGER, semester INTEGER, teacherID TEXT, moduleCode TEXT, FOREIGN KEY(teacherID) REFERENCES teacher(teacherID), FOREIGN KEY(moduleCode) REFERENCES module(moduleCode), PRIMARY KEY (teacherID, moduleCode) ) ''')
+    crDB.commit()
+    cursor.close()
+
+def populateControl():
+    # populate table, if table is EMPTY
+    crDB = sqlite3.connect('db/crDB.db')
+    cc = crDB.cursor()
+    cc.execute('SELECT count(*) FROM student')  # count all rows in student table
+    isStudentExists = cc.fetchone()[0]
+    if isStudentExists == 0:
+        populateStudentTable(20)
+
+    cc.execute('SELECT count(*) FROM module')  # count all rows in module table
+    isModuleExists = cc.fetchone()[0]
+    if isModuleExists == 0:
+        populateModuleTable()
+
+    cc.execute('SELECT count(*) FROM teacher')  # count all rows in teacher table
+    isTeacherExists = cc.fetchone()[0]
+    if isTeacherExists == 0:
+        populateTeacherTable(6)
+
+    cc.execute('SELECT count(*) FROM teachedby')  # count all rows in teacher table
+    isTeachedbyExists = cc.fetchone()[0]
+    if isTeachedbyExists == 0:
+        populateTeachedbyTable(7)
+
+    cc.execute('SELECT count(*) FROM grade')  # count all rows in teacher table
+    isGradeExists = cc.fetchone()[0]
+    if isGradeExists == 0:
+        populateGradeTable(7)
+
+# check and create db
+# renamed to fit better to SqLite
+def initDB():
+    if not os.path.isdir("./db"):
+        os.makedirs("./db")
+        createDB = sqlite3.connect('db/crDB.db')
+        createTables()
+        populateControl()
+    elif not os.path.isfile("./db/crDB.db"):
+        createDB = sqlite3.connect('db/crDB.db')
+        createTables()
+        populateControl()
+    else:
+        createDB = sqlite3.connect('db/crDB.db')
+        populateControl()
+    return createDB
+
+def checkNcreateDB():
+    # reworked to make the initilaisation more readable
+    crDB = initDB()
+    return crDB
+
+
+
+
+
+
+
+
+
+
 #start up DB
-crDB = checkNcreateDB()
+crDB = initDB()
 
-#populate table, if table is EMPTY
-cc = crDB.cursor()
-cc.execute('SELECT count(*) FROM student') #count all rows in student table
-isStudentExists = cc.fetchone()
-if isStudentExists == 0 :
-    populateStudentTable(20)
 
-cc.execute('SELECT count(*) FROM module') #count all rows in module table
-isModuleExists = cc.fetchone()
-if isModuleExists == 0:
-    populateModuleTable()
-
-cc.execute('SELECT count(*) FROM teacher') #count all rows in teacher table
-isTeacherExists = cc.fetchone()
-if isTeacherExists == 0:
-    populateTeacherTable(6)
-
-cc.execute('SELECT count(*) FROM teachedby') #count all rows in teacher table
-isTeachedbyExists = cc.fetchone()
-if isTeachedbyExists == 0:
-    populateTeachedbyTable(7)
-
-cc.execute('SELECT count(*) FROM grade') #count all rows in teacher table
-isGradeExists = cc.fetchone()
-if isGradeExists == 0:
-    populateGradeTable(7)
 
 
 

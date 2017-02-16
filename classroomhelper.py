@@ -9,7 +9,8 @@ if __name__ == "__main__":
 
     print("Hello World")
 
-    #crDB = checkNcreateDB()
+    initDB()
+    crDB = sqlite3.connect('db/crDB.db')
 
     # this file shall contain all the core code created by David
     # all the rest should be in seperate .py files in the project root folder
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     # the code checks the forst two char of the input argument to decide, then it returns the plain password as is.
     # argument parameter string (see below)
     #
-    print( retrievePW("17159305507") )
+    print( retrievePW("17151825204") )
     # >>> p@ssword
     #
     # to use ONLY this function simply add the import line to top of your module file:
