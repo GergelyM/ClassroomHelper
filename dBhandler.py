@@ -236,3 +236,29 @@ def testQueries():
     print("5 Sample record from 'grade' table")
     for row in allRows:
         print(row)
+    # sample ooutput as is
+    print("\nSample raw output:")
+    print(allRows)
+    print("\n")
+
+# the actual query for authentication
+def retrievePW(userID):
+    uID = []
+    uID.append(userID)
+    cd = crDB.cursor()
+    if (userID[0:2:] == "st"):
+        cd.execute('SELECT teacherPassword FROM teacher WHERE teacherID = ?', uID)
+        rows = cd.fetchone[0]
+        # if len(rows) != 0 :
+        #     return rows
+    else:
+        cd.execute('SELECT studentPassword FROM student WHERE studentID = ?', uID)
+        rows = cd.fetchone()[0]
+        # if len(rows) != 0 :
+        #     return rows
+    return rows
+
+
+
+
+

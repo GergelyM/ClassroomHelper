@@ -15,3 +15,21 @@ if __name__ == "__main__":
     # just as the DBhandler module:
     # from dBhandler import *
 
+    # ++++++++++++++++++  DB ++++++++++++++++++
+    #for DB use, UNcomment the next line for sample data from tables
+    #
+    # testQueries()
+
+    #to retrieve password for a certain user (student/teacher), the ID of these two groups are slightly different, and
+    # need to be reworked later
+    # the code checks the forst two char of the input argument to decide, then it returns the plain password as is.
+    # argument parameter string (see below)
+    #
+    # print( retrievePW("17159305507") )
+    # >>> p@ssword
+    #
+    # to use ONLY this function simply add the import line to top of your module file:
+    # from dBhandler import retrievePW
+    #
+    # if want to import all use
+    # from dBhandler import *
