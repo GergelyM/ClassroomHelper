@@ -40,15 +40,8 @@ def checkNcreateDB():
         crDB = sqlite3.connect('db/crDB')
     return crDB
 
-#create the main DB for our project
+#start up DB
 crDB = checkNcreateDB()
-
-# #TODO-Gary do this only if no tables present, check for table presence
-# tableStudent = crDB.table('STUDENT')
-# tableTeacher = crDB.table('TEACHER')
-# tableGrade = crDB.table('GRADE')
-# tableModule = crDB.table('MODULE')
-# tableTeachedBy = crDB.table('TEACHEDBY')
 
 #TODO-Gary write a generic, unique userID generator // DONE for students
 #use given data find in DB: initials, date of birth, and current date
@@ -68,7 +61,8 @@ def genIdNum(name, surname, dateOfBirth, role):
     return uniqueID
 
 #TODO-Gary add comments to this function
-def generateRandomStudent(randomStudent=None):
+#renamed to fit a more generic role from generateRandomStudent() to generateRandomPerson(role)
+def generateRandomPerson(role):
     nameFile = open("teststuff/names.txt","r")
     fullNameList = nameFile.readlines()
     nameFile.close()
@@ -89,52 +83,33 @@ def generateRandomStudent(randomStudent=None):
         allDates[i] = allDates[i].rstrip("\n")
         i+=1
     randThree = randint(0,len(allDates)-1)
-    genStdID = genIdNum(name[randOne], surname[randTwo], allDates[randThree], "student")
+    genID = genIdNum(name[randOne], surname[randTwo], allDates[randThree], role)
     # id, studentID TEXT, studentTitle TEXT, studentName TEXT, studentSurname TEXT, studentDateOfBirth TEXT, studentPassword TEXT
-    randomStudent = ( genStdID,"",name[randOne],surname[randTwo],allDates[randThree],"p@ssword" )
+    if role == "student" :
+        randomStudent = ( genID,"",name[randOne],surname[randTwo],allDates[randThree],"p@ssword" )
+    elif role == "teacher":
+        randomStudent = (genID, "", name[randOne], surname[randTwo], "p@ssword")
     return randomStudent
 
 #TODO-Gary check if studentID exist in DB
 #TODO-Gary check and add real password later
 #renamed to reflect is function better from: insertXRndStudent(x) to populateStudentTable(x)
 def populateStudentTable(x):
-    # # check if table exists already //DONE
-    # if ("STUDENT" not in crDB.tables()):
-    #     global tableModule  # to make sure we use the same variable if it needed to use here
-    #     tableModule = crDB.table('STUDENT')
     studentBatch = []
     i=0
     while (i <= x):
-        studentBatch.append(generateRandomStudent())
+        studentBatch.append(generateRandomPerson("student"))
         i += 1
-    #tableStudent.insert({'studentID': dataIn[3],'studentSurname': dataIn[1],'studentName': dataIn[0],'studentDateOfBirth': dataIn[2],'password': 'p@ssword'})
     cursor2 = crDB.cursor()
     cursor2.executemany('INSERT INTO student(studentID, studentTitle, studentName, studentSurname, studentDateOfBirth, studentPassword) VALUES (?,?,?,?,?,?)', studentBatch)
     crDB.commit()
-    # maybe need the attribute names in () after the table name
-
     #maybe it should return with a True on success
     #exception handling would be a good solution (try/except)
 
 
 def populateModuleTable():
-    #check if table exists already //DONE
-    # if ("MODULE" not in crDB.tables()):
-    #     global tableModule      #to make sure we use the same variable if it needed to use here
-    #     tableModule = crDB.table('MODULE')
     #TODO-Gary create an algorithm generates module uniqueID, eid could be used for that
     #TODO-Gary describe modulecode //DONE
-    #moduleCode: M + 2digit + 3digit -> M01001, M02005, M01010
-    #tableModule.insert({'moduleID': dataIn[3],'moduleCode': dataIn[1],'moduleName': dataIn[0],'moduleDescription': dataIn[2]})
-    # controlCheck = Query()
-    # test = crDB.search(controlCheck.MODULE.moduleID == "004")
-    # print(test)
-    # tableModule.insert({'moduleID': "0001",'moduleCode': "M01001",'moduleName': "Idontknow",'moduleDescription': "Nobody helped me out, so no description, you write better if you want"})
-    # tableModule.insert({'moduleID': "0002",'moduleCode': "M01003",'moduleName': "NoModulenames",'moduleDescription': "Nobody helped me out, so no description, you write better if you want"})
-    # tableModule.insert({'moduleID': "0003",'moduleCode': "M02001",'moduleName': "StillIdontknow",'moduleDescription': "Nobody helped me out, so no description, you write better if you want"})
-    # tableModule.insert({'moduleID': "0004",'moduleCode': "M03010",'moduleName': "Yeaaah",'moduleDescription': "Nobody helped me out, so no description, you write better if you want"})
-    # tableModule.insert({'moduleID': "0005",'moduleCode': "M03010",'moduleName': "Yeaaah",'moduleDescription': "Nobody helped me out, so no description, you write better if you want"})
-    # tableModule.insert({'moduleID': "0006",'moduleCode': "M03011",'moduleName': "Yeaaah",'moduleDescription': "Nobody helped me out, so no description, you write better if you want"})
     # id, moduleCode TEXT, moduleName TEXT, moduleDescription TEXT
     tableModule = []
     tableModule.append( ("M01001","Art of nothing","Nobody helped me out, so no description, you write better if you want") )
@@ -143,16 +118,63 @@ def populateModuleTable():
     tableModule.append( ("M03001","How to oreder at McD. efficiently","Nobody helped me out, so no description, you write better if you want") )
     tableModule.append( ("M03010","Spliff Rollin\' Course","Nobody helped me out, so no description, you write better if you want") )
     tableModule.append( ("M03011","Do WHATEVER professionally","Nobody helped me out, so no description, you write better if you want") )
-
     cursor3 = crDB.cursor()
     cursor3.executemany('''INSERT INTO module(moduleCode, moduleName, moduleDescription) VALUES (?,?,?)''', tableModule)
     crDB.commit()
     # # maybe it should return with a True on success
     # exception handling would be a good solution (try/except)
 
-#some tinyDB bs removed, mostly comments
+def populateTeacherTable(x):
+    teacherBatch = []
+    i = 0
+    while (i <= x):
+        teacherBatch.append(generateRandomPerson("teacher"))
+        i += 1
+    #id, teacherID, teacherTitle, teacherName, teacherSurname, teacherPassword
+    cursor2 = crDB.cursor()
+    cursor2.executemany(
+        'INSERT INTO teacher(teacherID, teacherTitle, teacherName, teacherSurname, teacherPassword) VALUES (?,?,?,?,?)',
+        teacherBatch)
+    crDB.commit()
+    # maybe it should return with a True on success
+    # exception handling would be a good solution (try/except)
 
-#populate student and module table, if table is EMPTY
+#now the tricky stuff
+#add some teachedby rows
+#year, semester, teacherID, moduleCode, FOREIGN KEY(teacherID), FOREIGN KEY(moduleCode), PRIMARY KEY (teacherID, moduleCode)
+def populateTeachedbyTable(x):
+    c4 = crDB.cursor()
+    i = 0
+    for i in range(0,x):
+        c4.execute('SELECT teacherID FROM teacher ORDER BY random() LIMIT 1')
+        randomTeacherID = c4.fetchone()[0]
+        c4.execute('SELECT moduleCode FROM module ORDER BY random() LIMIT 1')
+        randomModuleCode = c4.fetchone()[0]
+        insertData = (date.today().strftime("%Y"), 1, randomTeacherID, randomModuleCode )
+        c4.execute('INSERT INTO teachedby(year, semester, teacherID, moduleCode) VALUES (?,?,?,?)', insertData)
+    crDB.commit()
+
+def populateGradeTable(x):
+    #grade, year, semester, studentID, moduleCode
+    c5 = crDB.cursor()
+    i = 0
+    fallouts = []
+    for i in range(0,x):
+        c5.execute('SELECT studentID FROM student ORDER BY random() LIMIT 1')
+        randomStudentID = c5.fetchone()[0]
+        c5.execute('SELECT moduleCode FROM module ORDER BY random() LIMIT 1')
+        randomModuleCode = c5.fetchone()[0]
+        year = date.today().strftime("%Y")
+        grade = randint(38,91)
+        semester = randint(1,2)
+        insertData = (grade, year, semester, randomStudentID, randomModuleCode)
+        if randomStudentID not in fallouts:
+            c5.execute('INSERT INTO grade(grade, year, semester, studentID, moduleCode) VALUES (?,?,?,?,?)', insertData)
+            fallouts.append(randomStudentID)
+    crDB.commit()
+
+
+#populate table, if table is EMPTY
 cc = crDB.cursor()
 cc.execute('SELECT count(*) FROM student') #count all rows in student table
 isStudentExists = cc.fetchone()[0]
@@ -166,19 +188,51 @@ if isModuleExists == 0:
     populateModuleTable()
 #else:
 #    print("awesome")
+cc.execute('SELECT count(*) FROM teacher') #count all rows in teacher table
+isTeacherExists = cc.fetchone()[0]
+if isTeacherExists == 0:
+    populateTeacherTable(6)
+#else:
+#    print("neat")
+cc.execute('SELECT count(*) FROM teachedby') #count all rows in teacher table
+isTeachedbyExists = cc.fetchone()[0]
+if isTeachedbyExists == 0:
+    populateTeachedbyTable(7)
+#else:
+#    print("neat")
+cc.execute('SELECT count(*) FROM grade') #count all rows in teacher table
+isGradeExists = cc.fetchone()[0]
+if isGradeExists == 0:
+    populateGradeTable(7)
+#else:
+#    print("neat")
 
-
-
-
-#do some test queries from
-c = crDB.cursor()
-c.execute('SELECT * FROM module ORDER BY random() LIMIT 5')
-allRows = c.fetchall()
-print("5 Sample record from 'module' table")
-for row in allRows:
-    print(row)
-c.execute('SELECT * FROM student ORDER BY random() LIMIT 5')
-allRows = c.fetchall()
-print("5 Sample record from 'student' table")
-for row in allRows:
-    print(row)
+#get some sample data out of the DB
+def testQueries():
+    #do some test queries from
+    c = crDB.cursor()
+    c.execute('SELECT * FROM module ORDER BY random() LIMIT 5')
+    allRows = c.fetchall()
+    print("5 Sample record from 'module' table")
+    for row in allRows:
+        print(row)
+    c.execute('SELECT * FROM student ORDER BY random() LIMIT 5')
+    allRows = c.fetchall()
+    print("5 Sample record from 'student' table")
+    for row in allRows:
+        print(row)
+    c.execute('SELECT * FROM teacher ORDER BY random() LIMIT 5')
+    allRows = c.fetchall()
+    print("5 Sample record from 'teacher' table")
+    for row in allRows:
+        print(row)
+    c.execute('SELECT * FROM teachedby ORDER BY random() LIMIT 5')
+    allRows = c.fetchall()
+    print("5 Sample record from 'teachedby' table")
+    for row in allRows:
+        print(row)
+    c.execute('SELECT * FROM grade ORDER BY random() LIMIT 5')
+    allRows = c.fetchall()
+    print("5 Sample record from 'grade' table")
+    for row in allRows:
+        print(row)
