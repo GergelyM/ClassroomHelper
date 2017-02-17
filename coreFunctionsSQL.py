@@ -9,7 +9,6 @@ c = conn.cursor()
 def displayGrades(module): #now displays whose PW is p@assword, working on how to fetch from different tables
     #print contents of all columns for row that match a certain value in a column
 
-
     #c.execute('SELECT * FROM student WHERE studentPassword = "p@ssword"')
     c.execute('SELECT * FROM student WHERE studentPassword = ?', [module])
 
