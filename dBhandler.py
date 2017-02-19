@@ -12,6 +12,51 @@ from datetime import *
 import os
 from random import randint
 
+#TODO-Gary sort out imports, more organised, move os to the only function uses it
+#TODO-Gary Generate final data to each table
+
+#TODO-Gary create a dbConn Class to handle the connection
+#TODO-Gary test DbConn() Class
+class DbConn(object):
+    def __init__(self, dbPath):  #object/class constructor, everything in __init__ will be called when a copy of the class being created
+        self.connection = sqlite3.connect(dbPath)
+        self.connection.execute('pragma foreign_keys = on')
+        self.connection.commit()
+        self.cursor = self.connection.cursor()
+
+    def query(self, arg):
+        self.cursor.execute(arg)
+        self.connection.commit()
+        return self.cursor
+
+    def __del__(self):
+        self.connection.close()
+
+    # check and create db
+    # renamed to fit better to SqLite
+    def initDB(dbConn):
+        if not os.path.isdir("./db"):  # if this won't work well use os.path.exists(<path>)
+            os.makedirs("./db")  # at this level of the project it sould just rely on an existing DB on path
+            createDB = sqlite3.connect('db/crDB.db')
+            createTables()
+            populateControl()
+        elif not os.path.isfile("./db/crDB.db"):
+            createDB = sqlite3.connect('db/crDB.db')
+            createTables()
+            populateControl()
+        else:
+            createDB = sqlite3.connect('db/crDB.db')
+            populateControl()
+        return createDB
+
+        # def checkNcreateDB():
+        #     # reworked to make the initilaisation more readable
+        #     crDB = initDB()
+        #     return crDB
+
+
+        # start up DB
+        # crDB = initDB()
 
 
 
@@ -151,32 +196,37 @@ def populateGradeTable(x):
     crDB.commit()
 
 #get some sample data out of the DB
-def testQueries():
+def testQueries(crDB):
     #do some test queries from
-    c = crDB.cursor()
-    c.execute('SELECT * FROM module ORDER BY random() LIMIT 5')
+    c = crDB.cursor
+    #c.execute('SELECT * FROM module ORDER BY random() LIMIT 5')
+    c.execute('SELECT * FROM module')
     allRows = c.fetchall()
-    print("5 Sample record from 'module' table")
+    print("All records from 'module' table")
     for row in allRows:
         print(row)
-    c.execute('SELECT * FROM student ORDER BY random() LIMIT 5')
+    #c.execute('SELECT * FROM student ORDER BY random() LIMIT 5')
+    c.execute('SELECT * FROM student')
     allRows = c.fetchall()
-    print("5 Sample record from 'student' table")
+    print("All records from 'student' table")
     for row in allRows:
         print(row)
-    c.execute('SELECT * FROM teacher ORDER BY random() LIMIT 5')
+    #c.execute('SELECT * FROM teacher ORDER BY random() LIMIT 5')
+    c.execute('SELECT * FROM teacher')
     allRows = c.fetchall()
-    print("5 Sample record from 'teacher' table")
+    print("All records from 'teacher' table")
     for row in allRows:
         print(row)
-    c.execute('SELECT * FROM teachedby ORDER BY random() LIMIT 5')
+    #c.execute('SELECT * FROM teachedby ORDER BY random() LIMIT 5')
+    c.execute('SELECT * FROM teachedby')
     allRows = c.fetchall()
-    print("5 Sample record from 'teachedby' table")
+    print("All records from 'teachedby' table")
     for row in allRows:
         print(row)
-    c.execute('SELECT * FROM grade ORDER BY random() LIMIT 5')
+    #c.execute('SELECT * FROM grade ORDER BY random() LIMIT 5')
+    c.execute('SELECT * FROM grade')
     allRows = c.fetchall()
-    print("5 Sample record from 'grade' table")
+    print("All records from 'grade' table")
     for row in allRows:
         print(row)
     # sample ooutput as is
@@ -259,39 +309,7 @@ def populateControl():
     if isGradeExists == 0:
         populateGradeTable(7)
 
-# check and create db
-# renamed to fit better to SqLite
-def initDB():
-    if not os.path.isdir("./db"):
-        os.makedirs("./db")
-        createDB = sqlite3.connect('db/crDB.db')
-        createTables()
-        populateControl()
-    elif not os.path.isfile("./db/crDB.db"):
-        createDB = sqlite3.connect('db/crDB.db')
-        createTables()
-        populateControl()
-    else:
-        createDB = sqlite3.connect('db/crDB.db')
-        populateControl()
-    return createDB
 
-def checkNcreateDB():
-    # reworked to make the initilaisation more readable
-    crDB = initDB()
-    return crDB
-
-
-
-
-
-
-
-
-
-
-#start up DB
-crDB = initDB()
 
 
 
