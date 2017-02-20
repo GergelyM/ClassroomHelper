@@ -1,6 +1,8 @@
 #encoding: UTF-8
 #Make sure you're using Python3
 #All code is by David, unless otherwise stated
+
+
 #import sqlite3
 from dBhandler import *
 #connect to the DB (run dBhandler.py first)
@@ -8,6 +10,8 @@ from dBhandler import *
 #c = conn.cursor()
 crDB = DbConn("db/crDB.db")
 c = crDB.cursor
+
+#Functions
 def getModuleInfo(module):
     c.execute('SELECT * FROM module WHERE moduleCode = ?', [module]) #Get module deets
     line = c.fetchall()
@@ -26,11 +30,39 @@ def displayGrades(module):
         user = line[0] #Select the frist and only tuple in the list
         print('%15s' % user[1], '%15s' % user[3], '%13s' % user[4], '%15s' % user[5], '%10s' % grade[0]) #print selected data with spacing
         
+def displayModules(teacher):
+    c.execute('SELECT * FROM teacher WHERE teacherID = ?', [teacher]) #Get teacher info
+    line = c.fetchall() #[0]?
+    user = line[0] #Select the first and only tuple in the list
+    title = "Getting your modules, ", user[2],  user[3], user[4], "..."
+    header = '%15s' % "Module Code",  '%15s' % "Module Name", '%13s' % "Module Desc."
+    c.execute('SELECT moduleCode FROM teachedby WHERE teacherID = ?', [teacher]) #Get modules
+    modules = c.fetchall()
+    i = 0 
+    for x in modules:
+        modules[i] = x[0]
+        i += 1
+    '''
+    ALTERNATIVE:
+    i = 0
+    while (i < len(modules)):
+        modules[i] = modules[i][0]
+        i+=1
+    '''
 
+    moduleList = modules
+    
 
+    return title, header, moduleList
 
-getModuleInfo("M03010")
-displayGrades("M03010")
+def diplayMyGrades(student):
+    return 0
+    
+#Teacher navigation between modules summary, single module, attndance, 
+
+#getModuleInfo("M03010")
+#displayGrades("M03010")
+displayModules("st144228203")
 
 '''
 DO NOT REMOVE
