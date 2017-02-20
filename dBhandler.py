@@ -26,8 +26,10 @@ class DbConn(object):
 
     def query(self, arg):
         self.cursor.execute(arg)
+        data = self.cursor.fetchall()
         self.connection.commit()
-        return self.cursor
+        #return self.cursor
+        return data
 
     def __del__(self):
         self.connection.close()
