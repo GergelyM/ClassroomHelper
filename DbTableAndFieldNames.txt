@@ -1,0 +1,8 @@
+Sprint 1
+student( id, studentID UNIQUE, studentTitle, studentName, studentSurname, studentDateOfBirth, studentPassword)
+teacher( id, teacherID UNIQUE, teacherTitle, teacherName, teacherSurname, teacherPassword)
+module( id, moduleCode UNIQUE, moduleName, moduleDescription)
+grade( grade, year, semester, studentID, moduleCode, FOREIGN KEY(studentID), FOREIGN KEY(moduleCode) )
+teachedby( year, semester, teacherID, moduleCode, FOREIGN KEY(teacherID), FOREIGN KEY(moduleCode) )
+
+    
