@@ -1,10 +1,13 @@
 #encoding: UTF-8
 #Make sure you're using Python3
 #All code is by David, unless otherwise stated
-import sqlite3
+#import sqlite3
+from dBhandler import *
 #connect to the DB (run dBhandler.py first)
-conn = sqlite3.connect('db/crDB.db')
-c = conn.cursor()
+#conn = sqlite3.connect('db/crDB.db')
+#c = conn.cursor()
+crDB = DbConn("db/crDB.db")
+c = crDB.cursor
 def getModuleInfo(module):
     c.execute('SELECT * FROM module WHERE moduleCode = ?', [module]) #Get module deets
     line = c.fetchall()
@@ -26,8 +29,8 @@ def displayGrades(module):
 
 
 
-getModuleInfo("M02001")
-displayGrades("M02001")
+getModuleInfo("M03010")
+displayGrades("M03010")
 
 '''
 DO NOT REMOVE
