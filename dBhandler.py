@@ -26,7 +26,7 @@ class DbConn(object):
 
     def query(self, arg):
         self.cursor.execute(arg)
-        data = self.cursor.fetchall()   # fetchall() make it possible to use list[n][k] format on the fetched data directly
+        data = self.cursor.fetchall()   # fetchall() make it possible to use 'list[n][k]' call on the fetched data directly
         self.connection.commit()
         #return self.cursor
         return data
