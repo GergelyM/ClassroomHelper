@@ -49,17 +49,23 @@ def displayModules(teacher):
         modules[i] = modules[i][0]
         i+=1
     '''
-
-    moduleList = modules
+    moduleList = []
+    for module in modules:
+        c.execute('SELECT * FROM module WHERE moduleCode = ?', [module]) #Get modules
+        line = c.fetchall()
+        mod = line[0][1:]
+        moduleList.append(mod)
+    #print(moduleList)
+    #Example: [('M01001', 'Art of nothing', 'Nobody helped me out, so no description, you write better if you want'), ...]
     
-
     return title, header, moduleList
 
-def diplayMyGrades(student):
+def diplayMyGrades(student): #TODO David
     return 0
     
-#Teacher navigation between modules summary, single module, attndance, 
+#TODO-David Teacher navigation between modules summary, single module, attendance, 
 
+#TESTING:
 #getModuleInfo("M03010")
 #displayGrades("M03010")
 displayModules("st144228203")
