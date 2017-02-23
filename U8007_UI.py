@@ -11,10 +11,11 @@ def select():
     root.title(titleModule) # Names the window
     intVar = int(var.get()) # Maybe not necessary but was for my testing
     selectedModule = intVar - 1 
-    moduleList = [(1, 'Text 1', 'Text 2'),(1, 'Text 3', 'Text 4'),(3,'Text 5', 'Text 6')] # Shortened to not include all modules just for ease
+    moduleList = [(1, 'Text 1', 'Text 2'),(2, 'Text 3', 'Text 4'),(3,'Text 5', 'Text 6')] # Shortened to not include all modules just for ease
     for selectedModule in moduleList:
-        label2 = tk.Label(frame3, text=moduleList[intVar-1])
-        label2.pack()
+        if intVar - 1 in moduleList:
+            label2 = tk.Label(frame3, text=moduleList[intVar-1])
+            label2.pack()
         #print(moduleList[intVar-1]) -- Just a test line
 
 
@@ -30,11 +31,11 @@ frame2.pack()
 frame3 = tk.Frame(root)
 frame3.pack()
 
-label1 = tk.Label(frame2,text=("Student ID" + "--------" + "Name" + '--------' + "Surname" + '-------' + "DoB" + '---------' + "Grade"),height=1, width=120)
+label1 = tk.Label(frame2,text=("Student ID" + "           " + "Name" + '           ' + "Surname" + '          ' + "DoB" + '            ' + "Grade"),height=1, width=120)
 label1.pack()
 # initial value
 var.set('Select Module') # Original text in drop down menu
-choices = [1,2,3,4,5,6] # Module code choices
+choices = [1,2,3,4,5] # Module code choices
 option = tk.OptionMenu(frame1, var, *choices) # Drop down menu
 option.pack(side='left', padx=5, pady=5) # Asthetic but necessary
 button1 = tk.Button(frame1, text="Search", command=select) # Search button
