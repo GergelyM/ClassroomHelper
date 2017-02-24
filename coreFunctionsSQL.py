@@ -59,6 +59,7 @@ def displayModules(teacher):
     for x in modules:
         modules[i] = x[0]
         i += 1
+    #maybe would be lucky to use the normal # comments, the ''' normally used for other kind of comments, although it works
     '''
     ALTERNATIVE:
     i = 0
@@ -88,6 +89,7 @@ def diplayMyGrades(student): #TODO David
 #displayModules("st144228203")
 #getModules()
 '''
+#when you'll write this code, consider that the grades will add up from three values, wighted. see Hassan's specs.
 DO NOT REMOVE
 First attempt: DEPRECATED.
 Leave for reference. Thanks. David.
