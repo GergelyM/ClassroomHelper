@@ -4,19 +4,34 @@ form of text box.
 That means that every time the program is run it can only search for one module then needs to be restarted
 
 '''
+
+'''I added in some functions. I commented some stuff.
+Sorry if is messy, it should make sense to you.If not PLEASE ASK.
+It seems to be working BUT we need to two things:
+1) Fix spacing/alignment
+2) Remove the {} from each stirng in the output
+Note: try with module M03010
+It starting to come toghether :D
+by David'''
+
+#TODO Everyone make more dummy data in the DB
+
 import tkinter as tk
+import coreFunctionsSQL as core
 
 def select():
     textbox1.delete('1.0','99999999.0')
     titleModule = "Selected module is %s" % var.get() # Names the window
     theModule = var.get()
     root.title(titleModule) # Names the window
-    selectedModule = str(theModule) 
-    i = 0
-    moduleList = [("222", 'StudentID 1', 'Name 2', "Surname 3", "DOB 4", "Grade 5"),("333", 'StudentID 6', 'Name 7', "Surname  8", "DOB 9", "Grade 10"),("444",'StudentID 11', 'Name 12', "Surname 13", "DOB 14", "Grade 15")] # Shortened to not include all modules just for ease
+    selectedModule = str(theModule)
+    title, header, moduleList = core.displayGrades(selectedModule) #by David
+    #i = 0
+    #print(moduleList) #by David
+    #moduleList = [("222", 'StudentID 1', 'Name 2', "Surname 3", "DOB 4", "Grade 5"),("333", 'StudentID 6', 'Name 7', "Surname  8", "DOB 9", "Grade 10"),("444",'StudentID 11', 'Name 12', "Surname 13", "DOB 14", "Grade 15")] # Shortened to not include all modules just for ease
     for m in moduleList:
-        if m[0] == selectedModule:
-            textbox1.insert('1.0', m)
+        #if m[0] == selectedModule:
+        textbox1.insert('1.0', m)#by David
             #print(m)
 
 
@@ -31,18 +46,20 @@ frame2 = tk.Frame(root)
 frame2.pack()
 frame3 = tk.Frame(root)
 frame3.pack()
-
-label1 = tk.Label(frame2,text=("Module code" + "            " + "Student ID" + "                       " + "Name" + '                     ' + "Surname" + '                     ' + "DoB" + '                    ' + "Grade"),height=1, width=120)
+headerGavin = "code" + "            " + "Student ID" + "                       " + "Name" + '                     ' + "Surname" + '                     ' + "DoB" + '                    ' + "Grade" #by David
+headerDavid = '%15s' % "Student ID",  '%15s' % "Name", '%13s' % "Surname", '%15s' % "DoB", '%10s' % "Grade" #by David
+label1 = tk.Label(frame2,text=headerDavid,height=1, width=120) #by David
 label1.pack()
 # initial value
 var.set('Select Module') # Original text in drop down menu
-choices = [222,333,444,555,666,777] # Module code choices
+choices = core.getModules()#by David #[222,333,444,555,666,777] # Module code choices
 option = tk.OptionMenu(frame1, var, *choices) # Drop down menu
 option.pack(side='left', padx=5, pady=5) # Asthetic but necessary
 button1 = tk.Button(frame1, text="Search", command=select) # Search button
 button1.pack(side='left', padx=5, pady=10) # Asthetic but necessary
 
-label2 = tk.Label(frame3, text="Module information goes here")
+label2 = tk.Label(frame3, text="Module information goes here (see comment)")
+#You can get modules info from core.getModuleInfo(selectedModule). Not sure how to make it update when a module is actually selected
 label2.pack()
    
 
