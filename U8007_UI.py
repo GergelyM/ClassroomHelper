@@ -7,16 +7,17 @@ That means that every time the program is run it can only search for one module 
 import tkinter as tk
 
 def select():
+    textbox1.delete('1.0','99999999.0')
     titleModule = "Selected module is %s" % var.get() # Names the window
+    theModule = var.get()
     root.title(titleModule) # Names the window
-    intVar = int(var.get()) # Maybe not necessary but was for my testing
-    selectedModule = intVar - 1 
-    moduleList = [(1, 'Text 1', 'Text 2'),(2, 'Text 3', 'Text 4'),(3,'Text 5', 'Text 6')] # Shortened to not include all modules just for ease
-    for selectedModule in moduleList:
-        if intVar - 1 in moduleList:
-            label2 = tk.Label(frame3, text=moduleList[intVar-1])
-            label2.pack()
-        #print(moduleList[intVar-1]) -- Just a test line
+    selectedModule = str(theModule) 
+    i = 0
+    moduleList = [("222", 'StudentID 1', 'Name 2', "Surname 3", "DOB 4", "Grade 5"),("333", 'StudentID 6', 'Name 7', "Surname  8", "DOB 9", "Grade 10"),("444",'StudentID 11', 'Name 12', "Surname 13", "DOB 14", "Grade 15")] # Shortened to not include all modules just for ease
+    for m in moduleList:
+        if m[0] == selectedModule:
+            textbox1.insert('1.0', m)
+            #print(m)
 
 
 root = tk.Tk()
@@ -31,13 +32,27 @@ frame2.pack()
 frame3 = tk.Frame(root)
 frame3.pack()
 
-label1 = tk.Label(frame2,text=("Student ID" + "           " + "Name" + '           ' + "Surname" + '          ' + "DoB" + '            ' + "Grade"),height=1, width=120)
+label1 = tk.Label(frame2,text=("Module code" + "            " + "Student ID" + "                       " + "Name" + '                     ' + "Surname" + '                     ' + "DoB" + '                    ' + "Grade"),height=1, width=120)
 label1.pack()
 # initial value
 var.set('Select Module') # Original text in drop down menu
-choices = [1,2,3,4,5] # Module code choices
+choices = [222,333,444,555,666,777] # Module code choices
 option = tk.OptionMenu(frame1, var, *choices) # Drop down menu
 option.pack(side='left', padx=5, pady=5) # Asthetic but necessary
 button1 = tk.Button(frame1, text="Search", command=select) # Search button
 button1.pack(side='left', padx=5, pady=10) # Asthetic but necessary
+
+label2 = tk.Label(frame3, text="Module information goes here")
+label2.pack()
+   
+
+
+#scrollbar = tk.Scrollbar(root)
+#scrollbar.pack(side=RIGHT, fill=Y)
+
+textbox1 = tk.Text(frame3,)
+textbox1.insert('1.0', "Hello")
+#textbox1.insert(END, "Bye Bye")
+textbox1.pack()
+
 root.mainloop() # Run 
