@@ -32,12 +32,32 @@ def fetchData(userID):
 
 #move everything to a login class
 
-class loginHandler(object):
-    def __init__(self):
-        self.userID = fetchData(userID)
-        self.userPassword =
+class LoginHandler(object):
+        crDB = DbConn("db/crDB.db")
+        c = crDB.cursor
+        userID = ""
+        userPassword = ""
 
+        def __init__(self):
+            self.userID = input("Enter ID: ")
+            self.userPassword = input("Enter password: ")
 
+        def readInput(self):
+            self.userID = input("Enter ID: ")
+            self.userPassword = input("Enter password: ")
+
+        def fetchData(self, userID):
+            newSq = ""
+            if self.userID[0:1].isnumeric():
+                newSq = "SELECT studentPassword FROM student WHERE studentID = '" + userID + "'"
+            if self.userID[0:2] == "st":
+                newSq = "SELECT teacherPassword FROM teacher WHERE teacherID = '" + userID + "'"
+            self.c.execute(newSq)
+            return self.c.fetchone()[0][0]
+
+logi = LoginHandler
+
+print(LoginHandler.fetchData(17159114703))
 
 def login():
     #global password

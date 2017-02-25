@@ -4,8 +4,8 @@
 
 
 #import sqlite3
-from dBhandler import *
-#connect to the DB (run dBhandler.py first)
+from dbHandler import *
+#connect to the DB (run dbHandler.py first)
 #conn = sqlite3.connect('db/crDB.db')
 #c = conn.cursor()
 crDB = DbConn("db/crDB.db")
