@@ -6,3 +6,26 @@ grade( grade, year, semester, studentID, moduleCode, FOREIGN KEY(studentID), FOR
 teachedby( year, semester, teacherID, moduleCode, FOREIGN KEY(teacherID), FOREIGN KEY(moduleCode) )
 
     
+Sprint 2
+for sprint 2 the DB will get a major update, which will affect many of the queries.
+changes,
+
+0. Introduce new table for group sets (GROUPSET), which will generally replace the TEACHEDBY table and add a new db relation to GRADES.
+In short, the teacher will be assigned to sets, instead of modules, and each module will have at least 1 set.
+After all the structure will be similar to the old TEACHEDBY table.
+
+1. GRADES will get some new fields to meet the requirements to implement ATTENDANCE. ALso a new
+
+2. ATTENDANCE will bring in at least 2, more likely 3 new fields.
+ATTENDANCE intended to track daily attendance to each student.
+The idea is one field will hold one single integer starts from 0, and add exaclty 1 to it with every successful attendance check.
+The second field will track every attendance check done by the teacher. The third  field supposedly will hold the date of
+the last performed attendance check, to restrict multiple checks per week. Dumb simple way, but hopefully will serve the purpose.
+
+3. TEACHER table will change regading it's fields, now it's kind of copy of STUDENT table. Some data will be removed (DoB)
+
+4. Same for STUDENT table. Both intended to reduce data to a bare minimum required for our purpose.
+(originally I designed the tables to hold data for generating ID's and such for future data INSERTS, since we don't have
+to do that, no need for some fields any more)
+Also studentID will be shortened.
+

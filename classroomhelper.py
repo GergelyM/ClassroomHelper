@@ -2,7 +2,7 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 
-from dBhandler import *
+from dbHandler import *
 
 if __name__ == "__main__":
 

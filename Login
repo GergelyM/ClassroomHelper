@@ -24,8 +24,8 @@ def login():
     else:
         print("Incorrect login")
 
-    # Check if login and password match
     # Returns "s" if logged as a student
+    # Check if login and password match
     # Returns "t" if logged as a teacher
     # Returns "f" if login failed
     if status == "s":

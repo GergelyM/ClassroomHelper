@@ -3,7 +3,7 @@
 #Make sure you're using Python3
 #All code is by David, unless otherwise stated
 
-from dBhandler import *
+from dbHandler import *
 
 
 crDB = DbConn("db/crDB.db")
@@ -103,7 +103,7 @@ First attempt
 #################
 Old BD connection
     import sqlite3
-    connect to the DB (run dBhandler.py first)
+    connect to the DB (run dbHandler.py first)
     conn = sqlite3.connect('db/crDB.db')
     c = conn.cursor()
     
