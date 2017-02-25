@@ -30,8 +30,7 @@ def getModuleInfo(module): #Get module deets
 def displayGrades(module):
     title = "Getting grades for", module, "..."
     #print(title)
-    header = '%15s' % "Student ID",  '%15s' % "Name", '%13s' % "Surname",
-             '%15s' % "DoB", '%10s' % "Grade"
+    header = '%15s' % "Student ID",  '%15s' % "Name", '%13s' % "Surname", '%15s' % "DoB", '%10s' % "Grade"
     #print(header)
     c.execute('SELECT * FROM grade WHERE moduleCode = ?', [module]) #Get grades
     allGrades = c.fetchall()
@@ -41,8 +40,7 @@ def displayGrades(module):
         c.execute('SELECT * FROM student WHERE studentId = ?', [studentId])
         line = c.fetchall() #Get student deets
         user = line[0] #Select the frist and only tuple in the list         
-        moduleItem = '%15s' % user[1], '%15s' % user[3], '%13s' % user[4],
-                     '%15s' % user[5], '%10s' % grade[0]
+        moduleItem = '%15s' % user[1], '%15s' % user[3], '%13s' % user[4], '%15s' % user[5], '%10s' % grade[0]
                      #selected data with spacing
         #print(moduleItem)
         moduleList.append(moduleItem)
