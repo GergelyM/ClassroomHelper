@@ -9,6 +9,56 @@
 
 from dbHandler import *
 
+#################################################################################################
+# do not change this part, please!
+#move everything to a login class
+
+class LoginHandler(object):
+        #class-wide shared variables
+        crDB = DbConn("db/crDB.db")
+        c = crDB.cursor
+
+
+        def __init__(self):
+         #python constructor method
+            #object-level variables, unique to object
+            self.userID = input("Enter ID: ")
+            self.userPassword = input("Enter password: ")
+
+        def readInput(self):
+            self.userID = input("Enter ID: ")
+            self.userPassword = input("Enter password: ")
+
+        def fetchData(self):
+            newSq = ""
+            if self.userID[0:1].isnumeric():
+                newSq = "SELECT studentPassword FROM student WHERE studentID = '" + self.userID + "'"
+            if self.userID[0:2] == "st":
+                newSq = "SELECT teacherPassword FROM teacher WHERE teacherID = '" + self.userID + "'"
+            self.c.execute(newSq)
+            fetchedPw = self.c.fetchone()[0]
+            return fetchedPw
+
+        def login(self):
+            idInput = self.userID
+            passInput = self.userPassword
+            if (passInput != self.fetchData()):
+                print("Login failed. Please try again.")
+            elif passInput == self.fetchData():
+                print("Authentication successful, please proceed. Or whatever.")
+            return idInput
+
+#################################################################################################
+#just comment out these lines if you need to work on this file, but leave them as is, thanks
+
+#uId = input("Enter ID: ")
+#uPw = input("Enter password: ")
+logi = LoginHandler()
+print( logi.login() )
+
+#################################################################################################
+
+
 crDB = DbConn("db/crDB.db")
 c = crDB.cursor
 
@@ -26,43 +76,13 @@ def fetchData(userID):
 # in this case it is a list of one tuple
 # print( fetchData("17159114703") )
 # >>> [('p@ssword',)]
-
 #print( fetchData("st147707702") )
 #print( fetchData("17159114703") )
 
-#move everything to a login class
-
-class LoginHandler(object):
-        crDB = DbConn("db/crDB.db")
-        c = crDB.cursor
-        userID = ""
-        userPassword = ""
-
-        def __init__(self):
-            self.userID = input("Enter ID: ")
-            self.userPassword = input("Enter password: ")
-
-        def readInput(self):
-            self.userID = input("Enter ID: ")
-            self.userPassword = input("Enter password: ")
-
-        def fetchData(self, userID):
-            newSq = ""
-            if self.userID[0:1].isnumeric():
-                newSq = "SELECT studentPassword FROM student WHERE studentID = '" + userID + "'"
-            if self.userID[0:2] == "st":
-                newSq = "SELECT teacherPassword FROM teacher WHERE teacherID = '" + userID + "'"
-            self.c.execute(newSq)
-            return self.c.fetchone()[0][0]
-
-logi = LoginHandler
-
-print(LoginHandler.fetchData(17159114703))
-
 def login():
     #global password
-    idInput = ""
-    passInput = " "
+    idInput = input("Enter ID: ")
+    passInput = input("Enter password: ")
     while (passInput != fetchData(idInput)) :
         idInput = input("Enter ID: ")
         passInput = input("Enter password: ")
@@ -72,7 +92,7 @@ def login():
             print("Authentication successful, please proceed. Or whatever.")
     return idInput
 
-#login()
+#print( login() )
 
     #loginPass = fetchData(loginID)
     # loginPass = str(loginPass)
@@ -118,4 +138,4 @@ def login():
     #     status = "f"
     #     return status
 
-print(login())
+#print(login())
