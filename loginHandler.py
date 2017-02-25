@@ -84,8 +84,9 @@ class LoginHandler(object):
 #st147707702
 #17159114703
 #p@ssword
-logi = LoginHandler()
-print( logi.login() )
+
+logi = LoginHandler()   # 'logi' could be anything else of your choice
+print( logi.login() )   # no need to print it, that's for testing purposes
 
 #################################################################################################
 
