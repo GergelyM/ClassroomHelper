@@ -1,4 +1,4 @@
-### Author: Salik
+### Author: Salik, Gary
 ### Trasferred from Pulled project file by Gary
 
 # it would be a bit more efficient if you would use a single data query for the user by login input name
@@ -10,132 +10,82 @@
 from dbHandler import *
 
 #################################################################################################
-# do not change this part, please!
-#move everything to a login class
+# DO NOT CHANGE ANYTHING HERE, PLEASE!
+# IF YOU NEED SOME >CHANGE<, PLEASE LEAVE A COMMENT ABOVE. THANKS!!
 
 class LoginHandler(object):
         #class-wide shared variables
         crDB = DbConn("db/crDB.db")
         c = crDB.cursor
 
-
         def __init__(self):
          #python constructor method
-            #object-level variables, unique to object
-            self.userID = input("Enter ID: ")
-            self.userPassword = input("Enter password: ")
+            #object-level variables, unique to every object
+            self.userID = None
+            self.userPassword = None
 
         def readInput(self):
             self.userID = input("Enter ID: ")
             self.userPassword = input("Enter password: ")
 
-        def fetchData(self):
+        def fetchUserPw(self):
+            #this reads the object variables from __init__ method, to fetch data from DB
             newSq = ""
-            if self.userID[0:1].isnumeric():
-                newSq = "SELECT studentPassword FROM student WHERE studentID = '" + self.userID + "'"
-            if self.userID[0:2] == "st":
-                newSq = "SELECT teacherPassword FROM teacher WHERE teacherID = '" + self.userID + "'"
-            self.c.execute(newSq)
-            fetchedPw = self.c.fetchone()[0]
+            try:
+                if self.userID[0:1].isnumeric():
+                    newSq = "SELECT studentPassword FROM student WHERE studentID = '" + self.userID + "'"
+                if self.userID[0:2] == "st":
+                    newSq = "SELECT teacherPassword FROM teacher WHERE teacherID = '" + self.userID + "'"
+                self.c.execute(newSq)
+                fetchedPw = self.c.fetchone()[0]
+            except TypeError:
+                fetchedPw = False
+            #this returns the stored password belongs to the userID
             return fetchedPw
 
+        def repeatInput(self):
+            #repeatedly asks for user input, until match, or number of tries used up, whichever happens first
+            loopControl = True
+            # adding a counter here could be use to count/restrict failed attempts
+            counter = 3
+            returnVal = False
+
+            while counter > 0 and loopControl != False:
+                self.readInput()
+                # self.fetchUserPw() can have 3 value: None (default), False (userId wrong)
+                # or the actual password if the UserID is valid (but the password is not, fails login though)
+
+                dbPassword = self.fetchUserPw()
+                if dbPassword == False:
+                    if counter > 0:
+                        print("Please try again.")
+                    else:
+                        print("Login failed.")
+                    counter -= 1
+                elif dbPassword != False: #may check for "" string with AND here also
+                    if dbPassword == self.userPassword:
+                        print("Authentication successful, please proceed.")
+                        returnVal = self.userID
+                        loopControl = False
+                    else:
+                        counter -= 1
+                else:
+                    counter -= 1
+            return returnVal
+            #tested for 3x wrong ID & wrong pass; 3x good teacher ID & wrong pass; 3x good studentId & wrong pass, returns False
+            #tested for 2x fail attempt + 1x good student Id & good pass, returns the ID
+            #tested for 2x fail attempt + 1x good teacher Id & good pass, returns the ID
+
         def login(self):
-            idInput = self.userID
-            passInput = self.userPassword
-            if (passInput != self.fetchData()):
-                print("Login failed. Please try again.")
-            elif passInput == self.fetchData():
-                print("Authentication successful, please proceed. Or whatever.")
-            return idInput
+            return self.repeatInput()
 
 #################################################################################################
 #just comment out these lines if you need to work on this file, but leave them as is, thanks
-
-#uId = input("Enter ID: ")
-#uPw = input("Enter password: ")
+#st147707702
+#17159114703
+#p@ssword
 logi = LoginHandler()
 print( logi.login() )
 
 #################################################################################################
 
-
-crDB = DbConn("db/crDB.db")
-c = crDB.cursor
-
-def fetchData(userID):
-    #global newSq   # why is this global? an why is this here?
-    newSq = ""
-    if userID[0:1].isnumeric():
-        newSq = "SELECT studentPassword FROM student WHERE studentID = '" + userID + "'"
-    if userID[0:2] == "st":
-        newSq = "SELECT teacherPassword FROM teacher WHERE teacherID = '" + userID + "'"
-    c.execute(newSq)
-    return c.fetchone()[0][0]
-
-# to get back the output, it needs to be handled as a list of tuples [(),()...]
-# in this case it is a list of one tuple
-# print( fetchData("17159114703") )
-# >>> [('p@ssword',)]
-#print( fetchData("st147707702") )
-#print( fetchData("17159114703") )
-
-def login():
-    #global password
-    idInput = input("Enter ID: ")
-    passInput = input("Enter password: ")
-    while (passInput != fetchData(idInput)) :
-        idInput = input("Enter ID: ")
-        passInput = input("Enter password: ")
-        if passInput != fetchData(idInput) :
-            print("Login failed. Please try again.")
-        elif passInput == fetchData(idInput):
-            print("Authentication successful, please proceed. Or whatever.")
-    return idInput
-
-#print( login() )
-
-    #loginPass = fetchData(loginID)
-    # loginPass = str(loginPass)
-    # loginPass = loginPass[1:]
-    # loginPass = loginPass[1:]
-    # loginPass = loginPass[1:]
-    # loginPass = loginPass[:-1]
-    # loginPass = loginPass[:-1]
-    # loginPass = loginPass[:-1]
-    # loginPass = loginPass[:-1]
-
-    #status = ""
-
-# Check if user logged as a student or a teacher
-# Returns "s" if logged as a student
-# Returns "st" if logged as a teacher
-# both wrong
-
-    # if loginID[0:1].isnumeric():
-    #     status = "s"
-    #     password = input(str("Enter password: "))
-    # elif loginID[0:1] == "st":
-    #     status = "st"
-    #     password = input(str("Enter password: "))
-    # else:
-    #     print("Incorrect ID")
-
-# Check if login and password match
-
-
-# Returns "s" if logged as a student
-# Returns "t" if logged as a teacher
-# Returns "f" if login failed
-
-    # if  password == loginPass:
-    #     print("Logged as a student")
-    #     return status
-    # elif status =="st" and password == loginPass:
-    #     print("Logged as a teacher")
-    #     return status
-    # else:
-    #     print("Incorrect password")
-    #     status = "f"
-    #     return status
-
-#print(login())
