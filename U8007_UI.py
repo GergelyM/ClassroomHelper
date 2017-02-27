@@ -3,6 +3,7 @@ Will continue looking for a way to do it but if not I may need to change it to a
 form of text box.
 That means that every time the program is run it can only search for one module then needs to be restarted
 
+Fixed - Gavin
 '''
 
 '''I added in some functions. I commented some stuff.
@@ -26,6 +27,7 @@ def select():
     root.title(titleModule) # Names the window
     selectedModule = str(theModule)
     title, header, moduleList = core.displayGrades(selectedModule) #by David
+    moduleList.append(header) #Add the header at the top of the list
     #i = 0
     #print(moduleList) #by David
     #moduleList = [("222", 'StudentID 1', 'Name 2', "Surname 3", "DOB 4", "Grade 5"),("333", 'StudentID 6', 'Name 7', "Surname  8", "DOB 9", "Grade 10"),("444",'StudentID 11', 'Name 12', "Surname 13", "DOB 14", "Grade 15")] # Shortened to not include all modules just for ease
