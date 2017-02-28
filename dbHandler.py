@@ -8,9 +8,11 @@
 #FCK tinyDB, ditched for good, too complicated to be called "small and easy"
 
 import sqlite3
-from datetime import *
+import time
+#from datetime import *
 import os
 from random import randint
+
 
 #TODO-Gary sort out imports, more organised, move os to the only function uses it
 #TODO-Gary Generate final data to each table
@@ -62,22 +64,22 @@ class DbConn(object):
 
 
 
-#TODO-Gary write a generic, unique userID generator // DONE for students
-#use given data find in DB: initials, date of birth, and current date
-#rename function for more generic name : from genStdNum() to genIdNum()
-def genIdNum(name, surname, dateOfBirth, role):
-    currentYear = date.today().strftime("%y") #this gives back the current year in 2-digit format
-    fInitial = ord(name[0])
-    sInitial = ord(surname[0])
-    dof = dateOfBirth.split("/")    #the correct date format: dd/mm/yyyy
-    dof[2]=dof[2][-2::]
-    if role == "student" :
-        uniqueID = "%s%s%s%s%s%s" % (currentYear, fInitial + sInitial, randint(0,9), dof[0], randint(0,9), dof[1])
-    elif role == "teacher":
-        uniqueID = "%s%s%s%s%s%s" % ("st", fInitial + sInitial, randint(0,9), dof[0], randint(0,9), dof[1])
-    else:
-        uniqueID = "%s%s%s%s%s%s" % (currentYear, fInitial + sInitial, randint(0,9), dof[0], randint(0,9), dof[1])
-    return uniqueID
+# #TODO-Gary write a generic, unique userID generator // DONE
+# #use given data find in DB: initials, date of birth, and current date
+# #rename function for more generic name : from genStdNum() to genIdNum()
+# def genIdNum(name, surname, dateOfBirth, role):
+#     currentYear = date.today().strftime("%y") #this gives back the current year in 2-digit format
+#     fInitial = ord(name[0])
+#     sInitial = ord(surname[0])
+#     dof = dateOfBirth.split("/")    #the correct date format: dd/mm/yyyy
+#     dof[2]=dof[2][-2::]
+#     if role == "student" :
+#         uniqueID = "%s%s%s%s%s%s" % (currentYear, fInitial + sInitial, randint(0,9), dof[0], randint(0,9), dof[1])
+#     elif role == "teacher":
+#         uniqueID = "%s%s%s%s%s%s" % ("st", fInitial + sInitial, randint(0,9), dof[0], randint(0,9), dof[1])
+#     else:
+#         uniqueID = "%s%s%s%s%s%s" % (currentYear, fInitial + sInitial, randint(0,9), dof[0], randint(0,9), dof[1])
+#     return uniqueID
 
 #TODO-Gary add comments to this function
 #renamed to fit a more generic role from generateRandomStudent() to generateRandomPerson(role)
@@ -173,7 +175,7 @@ def populateTeachedbyTable(x):
         randomTeacherID = c4.fetchone()[0]
         c4.execute('SELECT moduleCode FROM module ORDER BY random() LIMIT 1')
         randomModuleCode = c4.fetchone()[0]
-        insertData = (date.today().strftime("%Y"), 1, randomTeacherID, randomModuleCode )
+        insertData = (time.strftime("%y"), 1, randomTeacherID, randomModuleCode )
         c4.execute('INSERT INTO teachedby(year, semester, teacherID, moduleCode) VALUES (?,?,?,?)', insertData)
     crDB.commit()
 
@@ -181,16 +183,16 @@ def populateGradeTable(x):
     #grade, year, semester, studentID, moduleCode
     crDB = sqlite3.connect('db/crDB.db')
     c5 = crDB.cursor()
-    i = 0
+    #i = 0
     fallouts = []
-    for i in range(0,x):
+    for i in range(0, x):
         c5.execute('SELECT studentID FROM student ORDER BY random() LIMIT 1')
         randomStudentID = c5.fetchone()[0]
         c5.execute('SELECT moduleCode FROM module ORDER BY random() LIMIT 1')
         randomModuleCode = c5.fetchone()[0]
-        year = date.today().strftime("%Y")
-        grade = randint(38,91)
-        semester = randint(1,2)
+        year = time.strftime("%Y")
+        grade = randint(38, 91)
+        semester = randint(1, 2)
         insertData = (grade, year, semester, randomStudentID, randomModuleCode)
         if randomStudentID not in fallouts:
             c5.execute('INSERT INTO grade(grade, year, semester, studentID, moduleCode) VALUES (?,?,?,?,?)', insertData)
@@ -236,23 +238,24 @@ def testQueries(crDB):
     print(allRows)
     print("\n")
 
+# not needed anymore
 # the actual query for authentication
-def retrievePW(userID):
-    uID = []
-    uID.append(userID)
-    crDB = sqlite3.connect('db/crDB.db')
-    cd = crDB.cursor()
-    if (userID[0:2:] == "st"):
-        cd.execute('SELECT teacherPassword FROM teacher WHERE teacherID = ?', uID)
-        rows = cd.fetchone[0]
-        # if len(rows) != 0 :
-        #     return rows
-    else:
-        cd.execute('SELECT studentPassword FROM student WHERE studentID = ?', uID)
-        rows = cd.fetchone()[0]
-        # if len(rows) != 0 :
-        #     return rows
-    return rows
+# def retrievePW(userID):
+#     uID = []
+#     uID.append(userID)
+#     crDB = sqlite3.connect('db/crDB.db')
+#     cd = crDB.cursor()
+#     if (userID[0:2:] == "st"):
+#         cd.execute('SELECT teacherPassword FROM teacher WHERE teacherID = ?', uID)
+#         rows = cd.fetchone[0]
+#         # if len(rows) != 0 :
+#         #     return rows
+#     else:
+#         cd.execute('SELECT studentPassword FROM student WHERE studentID = ?', uID)
+#         rows = cd.fetchone()[0]
+#         # if len(rows) != 0 :
+#         #     return rows
+#     return rows
 
 #not used at this stage, and probably won't be, as this file supped to be a module only
 #if __name__ == "__main__":
