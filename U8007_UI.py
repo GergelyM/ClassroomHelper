@@ -38,7 +38,7 @@ def select():
 
 
 root = tk.Tk()
-root.geometry("%dx%d+%d+%d" % (600, 200, 100, 20))
+root.geometry("%dx%d+%d+%d" % (630, 250, 100, 20))
 root.title("Teacher module select")
 var = tk.StringVar(root)
 
@@ -69,7 +69,7 @@ label2.pack()
 #scrollbar = tk.Scrollbar(root)
 #scrollbar.pack(side=RIGHT, fill=Y)
 
-textbox1 = tk.Text(frame3,)
+textbox1 = tk.Text(frame3, width=78)
 textbox1.insert('1.0', "Hello")
 #textbox1.insert(END, "Bye Bye")
 textbox1.pack()
