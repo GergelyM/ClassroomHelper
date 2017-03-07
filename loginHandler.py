@@ -8,7 +8,7 @@ class LoginHandler:
         def __init__(self, master):
 
             self.master = master
-            #Creates ID and password labels
+            #Creates ID and password label s
             self.labelID = Label(master, text="ID").grid(row=0, sticky=E)
             self.labelPassword = Label(master, text="Password").grid(row=1, sticky=E)
 
