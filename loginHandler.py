@@ -54,13 +54,14 @@ class LoginHandler:
                 dbPassword = self.fetchUserPw()
                 if dbPassword == False:
                     if counter > 0:
-                        print("Please try again.")
+                        self.successfulLogin = Label(self.master, text="Please try again.").grid(row=2, column=1)
                     else:
-                        print("Login failed.")
+                        self.successfulLogin = Label(self.master, text="Login failed.").grid(row=2, column=1)
+
                     counter -= 1
                 elif dbPassword != False:
                     if dbPassword == self.userPassword:
-                        print("Authentication successful, please proceed.")
+                        self.successfulLogin = Label(self.master, text="Authentication successful").grid(row=2, column = 1)
                         returnVal = self.userID
                         loopControl = False
                     else:
