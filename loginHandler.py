@@ -1,24 +1,34 @@
-### Author: Salik, Gary
 from dbHandler import *
 from tkinter import *
 
-class LoginHandler(object):
-        root = Tk()
+class LoginHandler:
         crDB = DbConn("db/crDB.db")
         c = crDB.cursor
 
-        def __init__(self):
-            self.userID = None
-            self.userPassword = None
+        def __init__(self, master):
+
+            self.master = master
+            #Creates ID and password labels
+            self.labelID = Label(master, text="ID").grid(row=0, sticky=E)
+            self.labelPassword = Label(master, text="Password").grid(row=1, sticky=E)
+
+            #Creates input entries
+            self.EntryID = Entry(master)
+            self.EntryID.grid(row=0, column=1)
+            self.EntryPassword = Entry(master, show="*")
+            self.EntryPassword.grid(row = 1, column = 1)
+
+            #Creates a sign in button
+            self.button = Button(master, text = "Sign in", command = self.login)
+            self.button.grid(row = 2, column = 2)
+
+            #for testing purposes
+            #17159114703
+            #p@ssword
 
         def readInput(self):
             self.userID = self.EntryID.get()
             self.userPassword = self.EntryPassword.get()
-
-        labelID = Label(root, text="ID").grid(row=0, sticky=E)
-        labelPassword = Label(root, text="Password").grid(row=1, sticky=E)
-        EntryID = Entry(root).grid(row=0, column=1)
-        EntryPassword = Entry(root, show="*").grid(row=1, column=1)
 
         def fetchUserPw(self):
             newSq = ""
@@ -32,8 +42,6 @@ class LoginHandler(object):
             except TypeError:
                 self.fetchedPw = False
             return self.fetchedPw
-
-        button = Button(root, text="Submit", command=fetchUserPw).grid(row=2, column=2)
 
         def repeatInput(self):
             loopControl = True
@@ -50,7 +58,7 @@ class LoginHandler(object):
                     else:
                         print("Login failed.")
                     counter -= 1
-                elif dbPassword != False: #may check for "" string with AND here also
+                elif dbPassword != False:
                     if dbPassword == self.userPassword:
                         print("Authentication successful, please proceed.")
                         returnVal = self.userID
@@ -61,11 +69,9 @@ class LoginHandler(object):
                     counter -= 1
             return returnVal
 
-        root.mainloop()
-
         def login(self):
             return self.repeatInput()
 
-
-logi = LoginHandler()   # 'logi' could be anything else of your choice
-print( logi.login() )   # no need to print it, that's for testing purposes
+root = Tk()
+gui = LoginHandler(root)
+root.mainloop()
