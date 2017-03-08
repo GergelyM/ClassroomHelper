@@ -86,33 +86,35 @@ class LoginHandler(object):
 #17159114703
 #p@ssword
 
+#manually create a new object called logi with manual inputs
+#logi = LoginHandler("st147707702","p@ssword")
 
-logi = LoginHandler("asdjkfh","p@ssword")   # 'logi' could be anything else of your choice
-print( "True teacher login: " )   # no need to print it, that's for testing purposes
-print( logi.login() )   # no need to print it, that's for testing purposes
-print( logi.loginMessage + "\n" )   # no need to print it, that's for testing purposes
-
-logi = LoginHandler("st147707702","p@ssword")   # 'logi' could be anything else of your choice
-print( "True teacher login: " )   # no need to print it, that's for testing purposes
-print( logi.login() )   # no need to print it, that's for testing purposes
-print( logi.loginMessage + "\n" )   # no need to print it, that's for testing purposes
-
-logi = LoginHandler("st147707702","sdfjldskjf")   # 'logi' could be anything else of your choice
-print( "Flase teacher login: " )   # no need to print it, that's for testing purposes
-print( logi.login() )   # no need to print it, that's for testing purposes
-print( logi.loginMessage + "\n")   # no need to print it, that's for testing purposes
-
-logi = LoginHandler("17159114703","p@ssword")   # 'logi' could be anything else of your choice
-print( "True student login: " )   # no need to print it, that's for testing purposes
-print( logi.login() )   # no need to print it, that's for testing purposes
-print( logi.loginMessage + "\n" )   # no need to print it, that's for testing purposes
-
-logi = LoginHandler("17159114703","LKSADFJLK")   # 'logi' could be anything else of your choice
-print( "Flase student login: " )   # no need to print it, that's for testing purposes
-print( logi.login() )   # no need to print it, that's for testing purposes
-print( logi.loginMessage + "\n" )   # no need to print it, that's for testing purposes
-
-
+#
+# logi = LoginHandler("asdjkfh","p@ssword")   # 'logi' could be anything else of your choice
+# print( "True teacher login: " )   # no need to print it, that's for testing purposes
+# print( logi.login() )   # no need to print it, that's for testing purposes
+# print( logi.loginMessage + "\n" )   # no need to print it, that's for testing purposes
+#
+# logi = LoginHandler("st147707702","p@ssword")   # 'logi' could be anything else of your choice
+# print( "True teacher login: " )   # no need to print it, that's for testing purposes
+# print( logi.login() )   # no need to print it, that's for testing purposes
+# print( logi.loginMessage + "\n" )   # no need to print it, that's for testing purposes
+#
+# logi = LoginHandler("st147707702","sdfjldskjf")   # 'logi' could be anything else of your choice
+# print( "Flase teacher login: " )   # no need to print it, that's for testing purposes
+# print( logi.login() )   # no need to print it, that's for testing purposes
+# print( logi.loginMessage + "\n")   # no need to print it, that's for testing purposes
+#
+# logi = LoginHandler("17159114703","p@ssword")   # 'logi' could be anything else of your choice
+# print( "True student login: " )   # no need to print it, that's for testing purposes
+# print( logi.login() )   # no need to print it, that's for testing purposes
+# print( logi.loginMessage + "\n" )   # no need to print it, that's for testing purposes
+#
+# logi = LoginHandler("17159114703","LKSADFJLK")   # 'logi' could be anything else of your choice
+# print( "Flase student login: " )   # no need to print it, that's for testing purposes
+# print( logi.login() )   # no need to print it, that's for testing purposes
+# print( logi.loginMessage + "\n" )   # no need to print it, that's for testing purposes
+#
 
 #################################################################################################
 
