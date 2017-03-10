@@ -1,3 +1,13 @@
+####################################################################################
+#
+# You * MUST NOT * run this script!
+# If you do so it will overwrite your DB file with an empty version of it.
+# You are welcome to read it if you need more info of the structure or
+# the how-to of the table population functions. There are files missing
+# from this GIT repo. to prevent complete run of this script.
+#
+####################################################################################
+
 import sqlite3
 import time
 import os
@@ -6,27 +16,20 @@ import dbHandler
 import randomIdGenerator
 
 # check and create db
-# renamed to fit better to SqLite
 def initDB():
     if not os.path.isdir("./db"):  # if this won't work well use os.path.exists(<path>)
         print("No 'db' folder. Create folder. ")
         os.makedirs("./db")  # at this level of the project it should just rely on an existing DB on path
         createDB = sqlite3.connect('db/crDBv2.db')
-        #createTables()
-        #populateControl()
     elif not os.path.isfile("./db/crDBv2.db"):
         print("No 'crDBv2.db' file. Create file.")
         createDB = sqlite3.connect('db/crDBv2.db')
-        #createTables()
-        #populateControl()
     else:
         print("Folder and file present. Connect db.")
         createDB = sqlite3.connect('db/crDBv2.db')
-        #populateControl()
     return createDB
 
 def createTables():
-    #print("... in createTables() ...")
     cursor.execute(
         '''CREATE TABLE IF NOT EXISTS student(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,6 +58,8 @@ def createTables():
         '''CREATE TABLE IF NOT EXISTS groupset(
             groupsetID INTEGER PRIMARY KEY AUTOINCREMENT,
             groupsetName TEXT,
+            year TEXT,
+            semester INTEGER,
             moduleCode TEXT,
             teacherID TEXT,
             FOREIGN KEY (moduleCode) REFERENCES module(moduleCode),
@@ -63,8 +68,7 @@ def createTables():
             '''CREATE TABLE IF NOT EXISTS grade(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             grade INTEGER,
-            year TEXT,
-            semester INTEGER,
+            gradeType TEXT,
             studentID TEXT,
             groupsetID INTEGER,
             FOREIGN KEY(studentID) REFERENCES student(studentID),
@@ -78,8 +82,6 @@ def createTables():
             groupsetID INTEGER,
             FOREIGN KEY(studentID) REFERENCES student(studentID),
             FOREIGN KEY(groupsetID) REFERENCES groupset(groupsetID) ) ''')
-    #print("... end of createTables()")
-
 
 def generateRandomPerson(role):
     lastNameFile = open("teststuff/lastNames.txt","r")
@@ -162,17 +164,14 @@ def populateGroupsetTable(moduleID):
     # therefore it should be called every time after adding new modules,
     # otherwise it will not be possible to add students to the module
 
-    # groupsetID INTEGER PRIMARY KEY AUTOINCREMENT,
-    # groupsetName TEXT,
-    # moduleCode TEXT,
-    # teacherID TEXT,
-
     cursor2 = cursor
     cursor3 = cursor
     cursor2.execute(''' SELECT teacherID FROM teacher ORDER BY random() LIMIT 1 ''')
     ranTeacher = cursor2.fetchone()[0]
-    dataPush = ("a", moduleID, ranTeacher)
-    cursor3.execute(''' INSERT INTO groupset (groupsetName, moduleCode, teacherID) VALUES (?,?,?)''', dataPush)
+    gradeSemester = randint(1, 2)
+    gradeYear = time.strftime("%Y")  # 4 digit year
+    dataPush = ("a", gradeYear, gradeSemester, moduleID, ranTeacher)
+    cursor3.execute(''' INSERT INTO groupset (groupsetName, year, semester, moduleCode, teacherID) VALUES (?,?,?,?,?)''', dataPush)
 
 
 def populateGradeTable():
@@ -189,18 +188,16 @@ def populateGradeTable():
     #fetch all groupset IDs
     c5.execute('SELECT groupsetID FROM groupset')
     allgroupsetID = c5.fetchall()
-
     grade = 0
-    gradeYear = time.strftime("%y")  # 4 digit year
 
     for tuple in allStudentID:
         #tuple[0] #actual studentID
-        gradeSemester = randint(1, 2)
         #random groupset id
+        #gradeType <A = assignment> or <E = exam>
         newRand = randint(0, len(allgroupsetID) -1)
         randomGroupsetID = allgroupsetID[newRand][0]
-        dataPush = (grade, gradeYear, gradeSemester, tuple[0], randomGroupsetID)
-        c6.execute( 'INSERT INTO grade(grade, year, semester, studentID, groupsetID) VALUES (?,?,?,?,?)', dataPush )
+        dataPush = (grade, "A", tuple[0], randomGroupsetID)
+        c6.execute( 'INSERT INTO grade(grade, gradeType, studentID, groupsetID) VALUES (?,?,?,?)', dataPush )
 
 
 #get some sample data out of the DB
@@ -236,7 +233,7 @@ def testQueries():
     c.execute('SELECT * FROM groupset')
     allRows = c.fetchall()
     print("\nAll records from 'groupset' table")
-    print("id, groupsetName, moduleCode, teacherID")
+    print("id, groupsetName, year, semester, moduleCode, teacherID")
     for row in allRows:
         print(row)
  # 5
@@ -244,7 +241,7 @@ def testQueries():
     c.execute('SELECT * FROM grade')
     allRows = c.fetchall()
     print("\nAll records from 'grade' table")
-    print("id, grade, year, semester, studentID, groupsetID")
+    print("id, grade, gradeType, studentID, groupsetID")
     for row in allRows:
         print(row)
     # sample output as is
@@ -252,17 +249,10 @@ def testQueries():
     print(allRows)
     print("\n")
 
-
-
-#not used at this stage, and probably won't be, as this file supped to be a module only
-#if __name__ == "__main__":
-
-
-
 #######################################################################################
 
 # crate and populate tables
-#print( initDB() )
+# print( initDB() )
 
 # build DB connection
 connection = dbHandler.DbConn("db/crDBv2.db")
@@ -288,7 +278,7 @@ populateGradeTable()
 # allgrade = c5.fetchall()
 # print(allgrade)
 # SIXTH
-# attendance not yet added
+# attendance not yet populated
 
 #print out all data from DB
 testQueries()
