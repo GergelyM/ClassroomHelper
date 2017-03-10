@@ -101,9 +101,8 @@ class LoginHandler:
 #17159114703
 #p@ssword
 
-root = Tk()
-gui = LoginHandler(root)
-root.mainloop()
-
+#root = Tk()
+#gui = LoginHandler(root)
+#root.mainloop()
 
 #################################################################################################
