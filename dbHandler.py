@@ -9,8 +9,6 @@
 
 import sqlite3
 
-
-
 class DbConn(object):
     def __init__(self, dbPath):  #object/class constructor, everything in __init__ will be called when a copy of the class being created
         self.connection = sqlite3.connect(dbPath)
