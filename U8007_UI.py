@@ -38,7 +38,7 @@ def select():
 
 
 root = tk.Tk()
-root.geometry("%dx%d+%d+%d" % (600, 200, 100, 20))
+root.geometry("%dx%d+%d+%d" % (630, 250, 100, 20))
 root.title("Teacher module select")
 var = tk.StringVar(root)
 
@@ -50,8 +50,8 @@ frame3 = tk.Frame(root)
 frame3.pack()
 headerGavin = "code" + "            " + "Student ID" + "                       " + "Name" + '                     ' + "Surname" + '                     ' + "DoB" + '                    ' + "Grade" #by David
 headerDavid = '%15s' % "Student ID",  '%15s' % "Name", '%13s' % "Surname", '%15s' % "DoB", '%10s' % "Grade" #by David
-label1 = tk.Label(frame2,text=headerDavid,height=1, width=120) #by David
-label1.pack()
+#label1 = tk.Label(frame2,text=headerDavid,height=1, width=120) #by David
+#label1.pack()
 # initial value
 var.set('Select Module') # Original text in drop down menu
 choices = core.getModules()#by David #[222,333,444,555,666,777] # Module code choices
@@ -69,7 +69,7 @@ label2.pack()
 #scrollbar = tk.Scrollbar(root)
 #scrollbar.pack(side=RIGHT, fill=Y)
 
-textbox1 = tk.Text(frame3,)
+textbox1 = tk.Text(frame3, width=78)
 textbox1.insert('1.0', "Hello")
 #textbox1.insert(END, "Bye Bye")
 textbox1.pack()

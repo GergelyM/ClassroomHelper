@@ -8,28 +8,45 @@
 # well practically I'll make a variable with the db field values above.
 
 from dbHandler import *
+from tkinter import *
 
 #################################################################################################
 # DO NOT CHANGE ANYTHING HERE, PLEASE!
 # IF YOU NEED SOME >CHANGE<, PLEASE LEAVE A COMMENT ABOVE. THANKS!!
 
-class LoginHandler(object):
-        #class-wide shared variables
+class LoginHandler:
+        # class-wide shared variables
         crDB = DbConn("db/crDB.db")
         c = crDB.cursor
 
-        def __init__(self):
-         #python constructor method
-            #object-level variables, unique to every object
-            self.userID = None
-            self.userPassword = None
+        def __init__(self, master):
+            # python constructor method
+            # object-level variables, unique to every object
+            self.master = master
+            #Creates ID and password label s
+            self.labelID = Label(master, text="ID").grid(row=0, sticky=E)
+            self.labelPassword = Label(master, text="Password").grid(row=1, sticky=E)
+
+            #Creates input entries
+            self.EntryID = Entry(master)
+            self.EntryID.grid(row=0, column=1)
+            self.EntryPassword = Entry(master, show="*")
+            self.EntryPassword.grid(row = 1, column = 1)
+
+            #Creates a sign in button
+            self.button = Button(master, text = "Sign in", command = self.login)
+            self.button.grid(row = 2, column = 2)
+
+            #for testing purposes
+            #17159114703
+            #p@ssword
 
         def readInput(self):
-            self.userID = input("Enter ID: ")
-            self.userPassword = input("Enter password: ")
+            self.userID = self.EntryID.get()
+            self.userPassword = self.EntryPassword.get()
 
         def fetchUserPw(self):
-            #this reads the object variables from __init__ method, to fetch data from DB
+            # this reads the object variables from __init__ method, to fetch data from DB
             newSq = ""
             try:
                 if self.userID[0:1].isnumeric():
@@ -37,14 +54,14 @@ class LoginHandler(object):
                 if self.userID[0:2] == "st":
                     newSq = "SELECT teacherPassword FROM teacher WHERE teacherID = '" + self.userID + "'"
                 self.c.execute(newSq)
-                fetchedPw = self.c.fetchone()[0]
+                self.fetchedPw = self.c.fetchone()[0]
             except TypeError:
-                fetchedPw = False
-            #this returns the stored password belongs to the userID
-            return fetchedPw
+                self.fetchedPw = False
+            # this returns the stored password belongs to the userID
+            return self.fetchedPw
 
         def repeatInput(self):
-            #repeatedly asks for user input, until match, or number of tries used up, whichever happens first
+            # repeatedly asks for user input, until match, or number of tries used up, whichever happens first
             loopControl = True
             # adding a counter here could be use to count/restrict failed attempts
             counter = 3
@@ -54,17 +71,16 @@ class LoginHandler(object):
                 self.readInput()
                 # self.fetchUserPw() can have 3 value: None (default), False (userId wrong)
                 # or the actual password if the UserID is valid (but the password is not, fails login though)
-
                 dbPassword = self.fetchUserPw()
                 if dbPassword == False:
                     if counter > 0:
-                        print("Please try again.")
+                        self.successfulLogin = Label(self.master, text="Please try again.").grid(row=2, column=1)
                     else:
-                        print("Login failed.")
+                        self.successfulLogin = Label(self.master, text="Login failed.").grid(row=2, column=1)
                     counter -= 1
                 elif dbPassword != False: #may check for "" string with AND here also
                     if dbPassword == self.userPassword:
-                        print("Authentication successful, please proceed.")
+                        self.successfulLogin = Label(self.master, text="Authentication successful").grid(row=2, column = 1)
                         returnVal = self.userID
                         loopControl = False
                     else:
@@ -72,9 +88,9 @@ class LoginHandler(object):
                 else:
                     counter -= 1
             return returnVal
-            #tested for 3x wrong ID & wrong pass; 3x good teacher ID & wrong pass; 3x good studentId & wrong pass, returns False
-            #tested for 2x fail attempt + 1x good student Id & good pass, returns the ID
-            #tested for 2x fail attempt + 1x good teacher Id & good pass, returns the ID
+            # tested for 3x wrong ID & wrong pass; 3x good teacher ID & wrong pass; 3x good studentId & wrong pass, returns False
+            # tested for 2x fail attempt + 1x good student Id & good pass, returns the ID
+            # tested for 2x fail attempt + 1x good teacher Id & good pass, returns the ID
 
         def login(self):
             return self.repeatInput()
@@ -85,8 +101,9 @@ class LoginHandler(object):
 #17159114703
 #p@ssword
 
-logi = LoginHandler()   # 'logi' could be anything else of your choice
-print( logi.login() )   # no need to print it, that's for testing purposes
+root = Tk()
+gui = LoginHandler(root)
+root.mainloop()
+
 
 #################################################################################################
-
