@@ -83,6 +83,11 @@ login.grab_set() # disables main window until toplevel closed or given back by .
 # top1.geometry("%dx%d+%d+%d" % (wid, hei, x + 30, y + 30))
 #top1.geometry("150x200+%d+%d" % (x+30, y+30))
 
+#
+# login window code ends here
+##################################################################################
+# main window content starts here...
+#
 
 leftFrame = Frame(root, width=200, background="red", padx=10, pady=10)
 rightFrame = Frame(root, background="white")
