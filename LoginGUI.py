@@ -3,6 +3,14 @@ import os
 from tkinter import *
 from tkinter import ttk
 from LoginHandlerClass import *
+from activeUserClass import *
+
+#instantiate the user container Class
+activeUser = activeUserClass()
+
+#st147707702
+#17159114703
+#p@ssword
 
 
 #functions and methods
@@ -12,19 +20,19 @@ def callbackText():
 def closeToplevel():
     login.destroy()
 
-def callLoginHandlerClass():
-    uid = top1EntryUid.get()
-    upw = top1EntryUpw.get()
+def callLoginHandlerClass(uid, upw):
     # instantiate LoginHandler Class
     authReturn = LoginHandler(uid, upw)
-    if authReturn.login() != False:
-        #close window and set the user variable, or User Class to hold user ID from this function
-        statusBar.config(text = authReturn.loginMessage)
-        #login.destroy()
-    elif  authReturn.login() == False:
+    if authReturn.loggedOn != False:
+        #close window, set the User Class to hold user ID
+        statusBar.config(text=authReturn.loginMessage)
+        activeUser.setUID( authReturn.loggedOn )
+        leftFrameLabel.config(text="Hi " + activeUser.userName)
+        login.destroy()
+    elif authReturn.loggedOn == False:
         # should limit the tries later (the cases when the login class returns False)
-        statusBar.config(text = authReturn.loginMessage)
-
+        statusBar.config(text=authReturn.loginMessage)
+    # consider to kill Login object (authreturn)
 
 #GUI generators
 
@@ -55,8 +63,10 @@ top1EntryUid.grid(row=1, column=1, columnspan=2, padx=5)
 top1EntryUpw = ttk.Entry(login, show="*")
 top1EntryUpw.grid(row=2, column=1, columnspan=2)
 
-top1Button1 = ttk.Button(login, text="Cancel", command=closeToplevel).grid(row=3, column=1, pady=10)
-top1Button2 = ttk.Button(login, text="Login", command=callLoginHandlerClass).grid(row=3, column=2)
+top1Button1 = ttk.Button(login, text="Cancel", command=closeToplevel)
+top1Button1.grid(row=3, column=1, pady=10)
+top1Button2 = ttk.Button(login, text="Login", command=lambda: callLoginHandlerClass(top1EntryUid.get(), top1EntryUpw.get()))
+top1Button2.grid(row=3, column=2)
 
 
 login.attributes('-topmost', True) #brings toplevel window to the top
@@ -77,7 +87,8 @@ login.grab_set() # disables main window until toplevel closed or given back by .
 leftFrame = Frame(root, width=200, background="red", padx=10, pady=10)
 rightFrame = Frame(root, background="white")
 
-leftFrameLabel = Label(leftFrame, text="Shut up Logan!").pack(pady=10)
+leftFrameLabel = Label(leftFrame, text="")
+leftFrameLabel.pack(pady=10)
 
 button = ttk.Button(leftFrame, text='Click me')
 button.config( command = callbackText )
