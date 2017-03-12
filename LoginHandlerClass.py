@@ -7,7 +7,7 @@
 
 
 #################################################################################################
-# usage of this class to implent gui:
+# usage of this class to implement gui:
 # need to create a new object of this class by calling it from inside a function that used as 'command' in GUI
 # inside the button-command-function call this class in form: <variable> = LoginHandler(<Uid>, <Upw>)
 # where <variable> will hold the return value of the object [False or valid UID]
@@ -25,6 +25,7 @@ class LoginHandler(object):
         #class-wide shared variables
         crDB = DbConn("db/crDB.db")
         c = crDB.cursor
+        loggedOn = ""
         loginMessage = ""
 
         # python constructor method
@@ -32,6 +33,7 @@ class LoginHandler(object):
             #object-level variables, unique to every object
             self.userID = Uid
             self.userPassword = Upw
+            self.loggedOn = self.login()
 
         def fetchUserPw(self):
             #this reads the object variables from __init__ method, to fetch data from DB
