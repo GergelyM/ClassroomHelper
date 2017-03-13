@@ -5,12 +5,14 @@ from tkinter import ttk
 from LoginHandlerClass import *
 from activeUserClass import *
 
-#instantiate the user container Class
-activeUser = activeUserClass()
 
 #st147707702
-#17159114703
+#1738977
 #p@ssword
+
+
+#instantiate the user container Class
+activeUser = activeUserClass()
 
 
 #functions and methods
@@ -30,7 +32,7 @@ def callLoginHandlerClass(uid, upw):
         leftFrameLabel.config(text="Hi " + activeUser.userName)
         login.destroy()
     elif authReturn.loggedOn == False:
-        # should limit the tries later (the cases when the login class returns False)
+        # should limit the tries later (no. of cases when login class returns False)
         statusBar.config(text=authReturn.loginMessage)
     # consider to kill Login object (authreturn)
 
@@ -38,7 +40,7 @@ def callLoginHandlerClass(uid, upw):
 
 root = Tk()
 #Window header text / window name
-root.wm_title("Tutorial 1")
+root.wm_title("Login")
 #set min size of the window
 root.minsize(width=800, height=600)
 #window status bar
@@ -51,7 +53,6 @@ statusBar.pack(side=BOTTOM, fill=X)
 login = Toplevel(root)
 login.wm_title("Toplevel test")
 
-#top1.geometry(x = 200, y = 300)
 
 top1LabelUid = Label(login, text="User ID")
 top1LabelUid.grid(row=1, pady=10, sticky=E)
@@ -71,8 +72,7 @@ top1Button2.grid(row=3, column=2)
 
 login.attributes('-topmost', True) #brings toplevel window to the top
 login.focus_force()  #gives focus to toplevel window
-login.grab_set() # disables main window until toplevel closed or given back by .grab_release()
-#top1.grab_release() # to return to normal
+login.grab_set() # disables main window until toplevel closed or given back by login.grab_release()
 
 #set position of toplevel to middle of root
 #root.winfo_x(), root.winfo_y()
@@ -107,5 +107,5 @@ button.pack()
 leftFrame.pack(expand=False, side=LEFT, fill=Y)
 rightFrame.pack(expand=True, side=RIGHT, fill=BOTH)
 
-#hook main window to the main event handler loop
+#hook main window to the event handler loop
 root.mainloop()
