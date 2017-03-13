@@ -1,8 +1,11 @@
 import sqlite3
 
 class DbConn(object):
+
     def __init__(self, dbPath):  #object/class constructor, everything in __init__ will be called when a copy of the class being created
-        self.connection = sqlite3.connect(dbPath)
+        #self.connection = sqlite3.connect(dbPath)
+        #self.connection = sqlite3.connect("db/crDB.db")
+        self.connection = sqlite3.connect("db/crDBv2.db")
         self.connection.execute('pragma foreign_keys = on')
         self.connection.commit()
         self.cursor = self.connection.cursor()
