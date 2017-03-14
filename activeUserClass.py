@@ -40,7 +40,7 @@ class activeUserClass(object):
 
         def getUserData(self):
             if self.userType == "student":
-                self.c.execute("SELECT studentSurname, studentName, studentEmail FROM student WHERE studentID ='" + self.userID + "'")
+                self.c.execute("SELECT studentSurname, studentName FROM student WHERE studentID ='" + self.userID + "'")
             if self.userType == "teacher":
                 self.c.execute("SELECT teacherSurname, teacherName FROM teacher WHERE teacherID ='" + self.userID + "'")
             fetchedData = self.c.fetchone()
