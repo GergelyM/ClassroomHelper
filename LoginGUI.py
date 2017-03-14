@@ -1,19 +1,25 @@
-#imports
-import os
+#imports for GUI
 from tkinter import *
 from tkinter import ttk
+
+# imports for authentication need to be added in this form
 from LoginHandlerClass import *
 from activeUserClass import *
 
-
-#st147707702
+#datato test the login functions, more can be found in db_README.txt on GIT
+#st78598
 #1738977
 #p@ssword
 
+# Login gui done by Gary, please do not remove comments, and all changes must be commented
+# in this file and through GIT commit message if happened
+##################################################################################
+# Start of login GUI with authentication calls and returns
+#
 
-#instantiate the user container Class
+# instantiate the user container class, to hold and pass
+# the active user's info to subsequent functions
 activeUser = activeUserClass()
-
 
 #functions and methods
 def callbackText():
@@ -28,7 +34,7 @@ def callLoginHandlerClass(uid, upw):
     if authReturn.loggedOn != False:
         #close window, set the User Class to hold user ID
         statusBar.config(text=authReturn.loginMessage)
-        activeUser.setUID( authReturn.loggedOn )
+        activeUser.setUID(authReturn.loggedOn)
         leftFrameLabel.config(text="Hi " + activeUser.userName)
         login.destroy()
     elif authReturn.loggedOn == False:
@@ -49,10 +55,8 @@ statusBar = Label(root, text="", bd=1, relief=GROOVE, anchor=CENTER)
 #anchors are used to define where text is positioned relative to a reference point
 statusBar.pack(side=BOTTOM, fill=X)
 
-
 login = Toplevel(root)
-login.wm_title("Toplevel test")
-
+login.wm_title("Login")
 
 top1LabelUid = Label(login, text="User ID")
 top1LabelUid.grid(row=1, pady=10, sticky=E)
@@ -69,24 +73,14 @@ top1Button1.grid(row=3, column=1, pady=10)
 top1Button2 = ttk.Button(login, text="Login", command=lambda: callLoginHandlerClass(top1EntryUid.get(), top1EntryUpw.get()))
 top1Button2.grid(row=3, column=2)
 
-
 login.attributes('-topmost', True) #brings toplevel window to the top
 login.focus_force()  #gives focus to toplevel window
 login.grab_set() # disables main window until toplevel closed or given back by login.grab_release()
 
-#set position of toplevel to middle of root
-#root.winfo_x(), root.winfo_y()
-#x = root.winfo_x()
-#y = root.winfo_y()
-# wid = top1.winfo_width()
-# hei = top1.winfo_height()
-# top1.geometry("%dx%d+%d+%d" % (wid, hei, x + 30, y + 30))
-#top1.geometry("150x200+%d+%d" % (x+30, y+30))
-
 #
-# login window code ends here
+# login window code ends here.
 ##################################################################################
-# main window content starts here...
+# Main window content starts here. This part of the code can be changed and reused freely.
 #
 
 leftFrame = Frame(root, width=200, background="red", padx=10, pady=10)
