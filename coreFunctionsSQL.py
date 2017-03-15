@@ -6,16 +6,16 @@
 from dbHandler import *
 
 
-crDB = DbConn("db/crDB.db")
+crDB = DbConn("db/crDBv2.db")
 c = crDB.cursor
 
 #Functions
-def getModules():
-    c.execute('SELECT moduleCode FROM module')
+def getModules(teacherID):
+    c.execute('SELECT * FROM groupset WHERE teacherID = ?', [teacherID])
     modules = c.fetchall()
     i = 0 
     for x in modules:
-        modules[i] = x[0]
+        modules[i] = x[4] + " Set " + x[1]
         i += 1
     return modules
 
@@ -27,20 +27,25 @@ def getModuleInfo(module): #Get module deets
     #print(moduleInfo) #print selected data with spacing
     return moduleInfo
 
-def displayGrades(module):
-    title = "Getting grades for", module, "..."
+def displayGrades(selectedModule):
+    module = selectedModule[:6]
+    setName = selectedModule[-1:]
+    title = "Getting grades for", selectedModule, "..."
     #print(title)
-    header = '%15s' % "Student ID",  '%15s' % "Name", '%13s' % "Surname", '%15s' % "DoB", '%6s' % "Grade"
+    header = '%15s' % "Student ID",  '%15s' % "Name", '%13s' % "Surname",  '%6s' % "Grade"
     #print(header)
-    c.execute('SELECT * FROM grade WHERE moduleCode = ?', [module]) #Get grades
+    c.execute('SELECT groupsetID FROM groupset WHERE moduleCode = ? AND groupsetName = ?', [module, setName])
+    setID = c.fetchall()[0][0]
+    print(setID)
+    c.execute('SELECT * FROM grade WHERE groupsetID = ?', [setID]) #Get grades
     allGrades = c.fetchall()
     moduleList = []
     for grade in allGrades: #go through all the rows
         studentId = grade[3] #Find the student ID
-        c.execute('SELECT * FROM student WHERE studentId = ?', [studentId])
+        c.execute('SELECT * FROM student WHERE studentID = ?', [studentId])
         line = c.fetchall() #Get student deets
         user = line[0] #Select the frist and only tuple in the list         
-        moduleItem = '%15s' % user[1], '%15s' % user[3], '%13s' % user[4], '%15s' % user[5], '%6s' % grade[0]
+        moduleItem = '%15s' % user[1], '%15s' % user[3], '%13s' % user[4], '%6s' % grade[0]
                      #selected data with spacing
         #print(moduleItem)
         moduleList.append(moduleItem)
@@ -79,9 +84,9 @@ def diplayMyGrades(student): #TODO David
 
 #TESTING:
 #getModuleInfo("M03010")
-#displayGrades("M03010")
+displayGrades('M03010 Set a')
 #displayModules("st144228203")
-#getModules()
+#print(getModules('st82277'))
 #diplayMyGrades(student)
 '''
 Deprecated code: Leave for reference. Thanks. David.

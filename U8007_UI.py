@@ -15,6 +15,8 @@ Note: try with module M03010
 It starting to come toghether :D
 by David'''
 
+teacherID = 'st82277' #Fixed teacher ID for now
+
 #TODO Everyone make more dummy data in the DB
 
 import tkinter as tk
@@ -54,7 +56,7 @@ headerDavid = '%15s' % "Student ID",  '%15s' % "Name", '%13s' % "Surname", '%15s
 #label1.pack()
 # initial value
 var.set('Select Module') # Original text in drop down menu
-choices = core.getModules()#by David #[222,333,444,555,666,777] # Module code choices
+choices = core.getModules(teacherID)#by David #[222,333,444,555,666,777] # Module code choices
 option = tk.OptionMenu(frame1, var, *choices) # Drop down menu
 option.pack(side='left', padx=5, pady=5) # Asthetic but necessary
 button1 = tk.Button(frame1, text="Search", command=select) # Search button
