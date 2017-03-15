@@ -93,7 +93,7 @@ id, moduleCode, moduleName, moduleDescription
 
 #########################################################################
 All records from 'groupset' table
-id, groupsetName, year, semester, moduleCode, teacherID
+groupsetID, groupsetName, year, semester, moduleCode, teacherID
 
 (1, 'a', '2017', 2, 'M01001', 'st82277')
 (2, 'a', '2017', 2, 'M01003', 'st82925')
