@@ -33,14 +33,11 @@ def select():
     #i = 0
     #print(moduleList) #by David
     #moduleList = [("222", 'StudentID 1', 'Name 2', "Surname 3", "DOB 4", "Grade 5"),("333", 'StudentID 6', 'Name 7', "Surname  8", "DOB 9", "Grade 10"),("444",'StudentID 11', 'Name 12', "Surname 13", "DOB 14", "Grade 15")] # Shortened to not include all modules just for ease
-    i=0
     for m in moduleList:
         #if m[0] == selectedModule:
-        print(i, m)
         txt = str(m)+"\n"   #endOfLine added after each line will sort the line issues for now
         textbox1.insert('1.0', txt)#by David
             #print(m)
-        i=i+1
 
 
 root = tk.Tk()
