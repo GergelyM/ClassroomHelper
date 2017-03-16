@@ -1,7 +1,7 @@
 from tkinter import *
 from dbHandler import *
 
-# Only displays a single module right now, very unfinished.
+
 # To see it, run MainWindow with one of the student test IDs on line 13
 # Sorry it's messy - Connor
 
@@ -9,7 +9,7 @@ from dbHandler import *
 # Test IDs  1733675
 #           1734055
 #           1735936
-# Others do not work as no teacher for M03010 # should be ok in DB v2 have a look on db_README.txt // Gary
+
 
 # Made a few edits so it can be displayed in the main window
 
@@ -70,39 +70,54 @@ class Student(object):
 
     def __init__(self):
         self.userID = ""
+        self.userName = ""
+        self.userSurname = ""
+        self.userModuleCode = []
+        self.userModuleNames = []
+        self.userGrade = []
+        self.userYear = []
+        self.userSemester = []
+        self.userTeacherID = []
+        self.userTeacherName = []
+        self.userTeacherSurname = []
+        self.usergroupsetID = []
 
     def setID(self, userID):
         self.userID = userID
 
     def getinfo(self):
+
+        # Gets the student name and any sets they are in
         self.c.execute("SELECT studentName FROM student WHERE studentID = '" + self.userID + "'")
         self.userName = self.c.fetchone()[0]
         self.c.execute("SELECT studentSurname FROM student WHERE studentID = '" + self.userID + "'")
         self.userSurname = self.c.fetchone()[0]
-        self.userModuleCode = []
-        self.c.execute("SELECT moduleCode FROM grade WHERE studentID = '" + self.userID + "'")
-        self.userModuleCode = self.c.fetchone()[0]
-        self.userModuleNames = []
-        self.c.execute("SELECT moduleName FROM module WHERE moduleCode = '" + self.userModuleCode + "'")
-        self.userModuleNames = self.c.fetchone()[0]
-        self.userGrade = []
-        self.c.execute("SELECT grade FROM grade WHERE studentID = '" + self.userID + "'")
-        self.userGrade = self.c.fetchone()[0]
-        self.userYear = []
-        self.c.execute("SELECT year FROM grade WHERE studentID = '" + self.userID + "'")
-        self.userYear = self.c.fetchone()[0]
-        self.userSemester = []
-        self.c.execute("SELECT semester FROM grade WHERE studentID = '" + self.userID + "'")
-        self.userSemester = self.c.fetchone()[0]
-        self.userTeacherID = []
-        self.c.execute("SELECT teacherID FROM teachedby WHERE moduleCode = '" + self.userModuleCode + "'")
-        self.userTeacherID = self.c.fetchone()[0]
-        self.userTeacherName = []
-        self.c.execute("SELECT teacherName FROM teacher WHERE teacherID = '" + self.userTeacherID + "'")
-        self.userTeacherName = self.c.fetchone()[0]
-        self.userTeacherSurname = []
-        self.c.execute("SELECT teacherSurname FROM teacher WHERE teacherID = '" + self.userTeacherID + "'")
-        self.userTeacherSurname = self.c.fetchone()[0]
+        self.c.execute("SELECT groupsetID FROM grade WHERE studentID = '" + self.userID + "'")
+        self.usergroupsetID = self.c.fetchall()
+
+        # Gets info for each module set
+        c = 0
+        for i in self.usergroupsetID:
+            self.c.execute("SELECT moduleCode FROM groupset WHERE groupsetID = '" + str(i[0]) + "'")
+            self.userModuleCode.append(self.c.fetchone())
+            self.c.execute("SELECT moduleName FROM module WHERE moduleCode = '" + self.userModuleCode[c][0] + "'")
+            self.userModuleNames.append(self.c.fetchone())
+            self.c.execute("SELECT gradeType FROM grade WHERE studentID = '" + self.userID + "'")
+            self.userGrade.append(self.c.fetchone())
+            self.c.execute("SELECT year FROM groupset WHERE groupsetID = '" + str(i[0]) + "'")
+            self.userYear.append(self.c.fetchone())
+            self.c.execute("SELECT semester FROM groupset WHERE groupsetID = '" + str(i[0]) + "'")
+            self.userSemester.append(self.c.fetchone())
+            self.c.execute("SELECT teacherID FROM groupset WHERE groupsetID = '" + str(i[0]) + "'")
+            self.userTeacherID.append(self.c.fetchone())
+            self.c.execute("SELECT teacherName FROM teacher WHERE teacherID = '" + self.userTeacherID[c][0] + "'")
+            self.userTeacherName.append(self.c.fetchone())
+            self.c.execute("SELECT teacherSurname FROM teacher WHERE teacherID = '" + self.userTeacherID[c][0] + "'")
+            self.userTeacherSurname.append(self.c.fetchone())
+            c+=1
+
+
+
 
 
 def displaystudentview(student, mainFrame):
@@ -139,20 +154,28 @@ def displaystudentview(student, mainFrame):
     alabel2 = Label(mainFrame, text=" ", bg="chartreuse3")
     alabel2.grid(row=0, column=3, columnspan=3, sticky=W+E)
 
-    # Columns of Data
-    uP = Label(mainFrame, text=student.userModuleNames, bg="snow") # module name
-    uPCode = Label(mainFrame, text=student.userModuleCode, bg="snow") # moduleCode
-    uPGrade = Label(mainFrame, text=student.userGrade, bg="snow") # Grade
-    uPyear = Label(mainFrame, text=student.userYear, bg="snow") # Year
-    uPSemester = Label(mainFrame, text=student.userSemester, bg="snow") # Semester
-    uPTeacher = Label(mainFrame, text=student.userTeacherName + " " + student.userTeacherSurname, bg="snow") # Teacher
 
-    uP.grid(row=3, column=0, sticky=W + E)
-    uPCode.grid(row=3, column=1, sticky=W + E)
-    uPGrade.grid(row=3, column=2, sticky=W + E)
-    uPyear.grid(row=3, column=3, sticky=W + E)
-    uPSemester.grid(row=3, column=4, sticky=W + E)
-    uPTeacher.grid(row=3, column=5, sticky=W + E)
+# Creates and displays a label for each module taken by the student
+def displayLabels(student, mainFrame):
+
+    c = 0
+    for i in student.userModuleCode:
+        uP = Label(mainFrame, text=student.userModuleNames[c][0], bg="snow")  # module name
+        uPCode = Label(mainFrame, text=student.userModuleCode[c][0], bg="snow")  # moduleCode
+        uPGrade = Label(mainFrame, text=student.userGrade[c][0], bg="snow")  # Grade
+        uPyear = Label(mainFrame, text=student.userYear[c][0], bg="snow")  # Year
+        uPSemester = Label(mainFrame, text=student.userSemester[c][0], bg="snow")  # Semester
+        uPTeacher = Label(mainFrame, text=student.userTeacherName[c][0] + " " + student.userTeacherSurname[c][0],
+                      bg="snow")  # Teacher
+
+        uP.grid(row=3 + c, column=0, sticky=W + E)
+        uPCode.grid(row=3 + c, column=1, sticky=W + E)
+        uPGrade.grid(row=3 + c, column=2, sticky=W + E)
+        uPyear.grid(row=3 + c, column=3, sticky=W + E)
+        uPSemester.grid(row=3 + c, column=4, sticky=W + E)
+        uPTeacher.grid(row=3 + c, column=5, sticky=W + E)
+
+        c += 1
 
 
 

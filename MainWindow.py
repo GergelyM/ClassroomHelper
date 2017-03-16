@@ -9,8 +9,8 @@ class MainWindow(object):
     def __init__(self):
 
         # Plan here is to have the login return the ID
-        # Test IDs st147707702 17153811308 17151025709 17145725904
-        self.setID("st147707702")
+        # Test IDs st78598 1733675 1734658 1735936
+        self.setID("1733675")
 
         # For Teachers
         if self.userID[0:2] == "st":
@@ -75,6 +75,7 @@ class MainWindow(object):
         student.setID(self.userID)
         student.getinfo()
         displaystudentview(student, self.mainFrame)
+        displayLabels(student, self.mainFrame)
         self.root.title(student.userName + " " + student.userSurname)
 
     def displaygrades(self):
