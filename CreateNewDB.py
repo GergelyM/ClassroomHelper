@@ -77,6 +77,7 @@ def createTables():
         '''CREATE TABLE IF NOT EXISTS attendance(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             attendTotal INTEGER,
+            present INTEGER,
             attendDate TEXT,
             studentID TEXT,
             groupsetID INTEGER,
@@ -190,15 +191,18 @@ def populateGradeTable():
     allgroupsetID = c5.fetchall()
     grade = 0
 
-    for tuple in allStudentID:
+    for student in allStudentID:
+        dataPush = []
         #tuple[0] #actual studentID
         #random groupset id
         #gradeType <A = assignment> or <E = exam>
         newRand = randint(0, len(allgroupsetID) -1)
         randomGroupsetID = allgroupsetID[newRand][0]
-        dataPush = (grade, "A", tuple[0], randomGroupsetID)
-        c6.execute( 'INSERT INTO grade(grade, gradeType, studentID, groupsetID) VALUES (?,?,?,?)', dataPush )
-
+        dataPush.append( (grade, "assignment", student[0], randomGroupsetID) )
+        dataPush.append( (grade, "exam", student[0], randomGroupsetID) )
+        dataPush.append( (grade, "attendance", student[0], randomGroupsetID) )
+        #print(dataPush)
+        c6.executemany( 'INSERT INTO grade (grade, gradeType, studentID, groupsetID) VALUES (?,?,?,?)', dataPush )
 
 #get some sample data out of the DB
 def testQueries():
@@ -251,7 +255,7 @@ def testQueries():
 
 #######################################################################################
 
-# crate and populate tables
+# create and populate tables
 # print( initDB() )
 
 # build DB connection
@@ -284,3 +288,5 @@ populateGradeTable()
 testQueries()
 
 
+# The cur.executescript command issues a COMMIT before running the provided script.
+# Additionally a CREATE executes a COMMIT intrinsically.
