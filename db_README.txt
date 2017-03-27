@@ -164,6 +164,16 @@ id, grade, gradeType, studentID, groupsetID
 (51, 0, 'A', '1774967', 3)
 
 #########################################################################
+New 'attendance' table created
+id / Type: INTEGER
+attendTotal / Type: INTEGER
+present / Type: INTEGER
+attendDate / Type: TEXT
+studentID / Type: TEXT
+groupsetID / Type: INTEGER
+
+
+#########################################################################
 Format of raw output:
 [(1, 0, 'A', '1733675', 9), (2, 0, 'A', '1733864', 4), (3, 0, 'A', '1734055', 5), (4, 0, 'A', '1734353', 5), (5, 0, 'A', '1734584', 1), (6, 0, 'A', '1734658', 8)...]
 
