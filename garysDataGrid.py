@@ -1,7 +1,7 @@
 import sqlite3
 from tkinter import *
 from tkinter import ttk
-import dbHandler
+import sqlite3
 import time
 
 #print(grades)
@@ -56,8 +56,8 @@ class field():
 
 class updateGradesClass():
     #variables
-    conn = dbHandler.DbConn("db/crDBv2.db")
-    cursor = conn.cursor
+    conn = sqlite3.connect("db/crDBv2.db")
+    cursor = conn.cursor()
     grades = None
     # [[element] * numcols] * numrows
     #actModule = ""
@@ -91,7 +91,10 @@ class updateGradesClass():
         self.grades = self.cursor.fetchall()
         #return grades
 
-        # print(grades)
+        # for i in self.grades:
+        #     print(i)
+
+        #print(self.grades)
         # returns
         # [(6, 'a', '2017', 1, 'M03011', 'st81623', 7, 0, 'A', '1734881', 6)
         # groupsetID, groupsetName, year, semester, moduleCode, teacherID, (grade)id, grade, gradeType, studentID, groupsetID
@@ -112,94 +115,135 @@ class updateGradesClass():
         self.actModule = modCombobox.get()
 
         for r in range(0, self.row):
+            # set background color variable
+            if r%2 != 0:
+                bckg = "gray90"
+            else:
+                bckg = "gray70"
+
             #add header fields to row 0
+            # fieldsToShow = [None, "groupsetName", "year", "semester", "moduleCode", None, None, "grade", "gradeType",
+            #                 "studentID", None]
             # if r == 0:
             #     headerFields = []
-            #     i = 0
+            #     i=0
+            #     #for field in fieldsToShow:
             #     while i < len(fieldsToShow):
-            #         #headerFields.append()
-            #         headerFields[i].config(relief=RAISED)
-            #         headerFields[i].grid(row=0, column=i, ipadx=10, ipady=5, sticky=W)
-            #         #headerFields[i].pack(side=LEFT)
-            #         i += 1
+            #         if fieldsToShow[i] != None:
+            #             headerFields.append( Label(self.gridFrame, text=fieldsToShow[i], relief=FLAT, bg=bckg) )
+            #             headerFields[i].config(relief=RAISED)
+            #             headerFields[i].grid(row=0, column=i, ipadx=10, ipady=5, sticky=W)
+
+            # fill up grid with widgets
             for c in range(0, self.col):
                 #print(str(self.col) +" : "+ str(abs(1-self.col)))
                 if self.actModule == "" or self.actModule == self.grades[r][4]:
                     if c == 0:
-                        self.grid[r][c] = Label(self.gridFrame, text=r)
+                        self.grid[r][c] = Label(self.gridFrame, text=r, relief=FLAT, bg=bckg)
+                        # add widget to grid at end
+                        self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
                     elif fieldsToShow[c] is not None:
                         if c == fieldToEdit:
                             txt = self.grades[r][c]
-                            self.grid[r][c] = Entry(self.gridFrame, width=5)
-                            self.grid[r][c].insert(0, txt)
+                            self.grid[r][c] = Entry(self.gridFrame, width=3, relief=FLAT, bg="white")
+                            # bind return key to entry to do update 1-by-1
+                            self.grid[r][c].bind('<Return>', lambda event, gradeID=self.grades[r][6] : self.updateGrade(event.widget.get(),gradeID) )
+                            self.grid[r][c].insert(END, txt)
                         else:
                             txt = self.grades[r][c]
-                            self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
+                            self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT, bg=bckg)
+                        # add widget to grid at end
+                        self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
+                    #add button to each line
                     # elif c == abs(1 - self.col):
                     #     txt = "Update "+str(r)+":"+str(c)
                     #     updVar = self.grid[r][7].get()
-                    #     self.grid[r][c] = Button(self.gridFrame, text=txt, command=lambda: self.updateGrade(updVar, self.grades[r][0]))
-                    else:
-                        txt = ""
-                        self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
-                    self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=W)
-
-        self.gridFrame.update()
-        gridHeight = self.gridFrame.winfo_height()
-        gridWidth = self.gridFrame.winfo_width()
-
+                    #     self.grid[r][c] = Button(self.gridFrame, text=txt, command=lambda : self.updateGrade(updVar, self.grades[r][0]))
+                    # else:
+                    #     txt = ""
+                    #     self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
+                    #     #self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
+                    # add widget to grid at end
+                    #self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
+                txt = ""
+                self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
+                #     #self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
+                # add widget to grid at end
+                self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
+        # add frame to canvas to make it scrollable
         self.master.create_window(0, 0, window=self.gridFrame, anchor=NW)
-        self.master.config(yscrollcommand=vScrbar.set, xscrollcommand=hScrbar.set, scrollregion=(0, 0, gridWidth, gridHeight))
 
+        # set scroll region to actual frame size
+        self.gridFrame.update()
+        gridHeight = 20 + self.gridFrame.winfo_height()
+        gridWidth = self.gridFrame.winfo_width()
+        self.master.config(yscrollcommand=vScrbar.set, xscrollcommand=hScrbar.set)
+        self.master.config(scrollregion=(0, 0, gridWidth, gridHeight))
+
+    #redraw the frame after modify
     def recreateFrame(self, event):
         self.setActModule(modCombobox.get)
         self.gridFrame.destroy()
+        self.dbFetch()
         self.dataGrid()
+        self.master.update()
 
-    #def updateGrade(self, newGrade, gradeID):
-    def updateGrade(self):
-        dataPush = []
-        i = 0
-        for row in self.grid:
-            print(i, row[0], row[7].get()  )
-            #dataPush.append( ( int( row[0]['text'] ), int( row[7].get() ) ) )
+    # binding test
+    def doGet(self, event):
+        print(event.widget.get())
 
-            i+=1
+    # update grade in DB
+    def updateGrade(self, newGrade, gradeID):
+        # body for batch update from top frame button
+        # dataPush = []
+        # i = 0
+        # for row in self.grid:
+        #     print(i, row[0], event.widget.get() )
+        #     #dataPush.append( ( int( row[0]['text'] ), int( row[7].get() ) ) )
+        #
+        #     i+=1
         #print(dataPush)
+        self.cursor.execute("SELECT grade FROM grade WHERE id=?", [gradeID])
+        print("UPDATE start :: new grade: " + str(newGrade) +" where grade ID: "+ str(gradeID))
+        pushData = (int(newGrade), int(gradeID))
+        print(pushData)
+        self.cursor.execute("UPDATE grade SET grade=? WHERE id=?", pushData)
+        self.recreateFrame(1)
+        self.cursor.execute("SELECT grade FROM grade WHERE id=?", [gradeID])
+        feedback = self.cursor.fetchone()
+        print("grade value after: ")
+        print(feedback)
+        self.conn.commit()
 
+    # lambda argument_list: expression
 
-        #print("UPDATE start for: " + str(newGrade) +" for "+ str(gradeID))
-        #self.cursor.execute("UPDATE grade SET grade=? WHERE id=?", (newGrade, gradeID))
-        #self.conn.commit
-        #self.recreateFrame(1)
-
-
-
-##########################################################################
-# def recreateFrame():
-#     print(modCombobox.get())
 
 #########################################################
+
 # draw GUI
+# create window
 root = Tk()
 root.update()
 
-#mainFrame = Frame(root, width=768, height=576)
+# main frame, placeholder for the data grid
 mainFrame = Frame(root)
-mainFrame.pack(side=LEFT, fill=BOTH, expand=1)
+mainFrame.pack(side=LEFT, fill=BOTH, expand=True)
 
 #############################################
 # add topFrame to mainFrame
+# frame with module select, ?set select?, module info, etc.
 topFrame = Frame(mainFrame)
 topFrame.config(height=200, relief=RAISED, borderwidth=1, padx=10, pady=15)
 topFrame.pack(side=TOP, fill=X, expand=False)
 
-#add canvas to mainFrame
+# add canvas to mainFrame
+# to sort out scroll for data grid
 mainCanvas = Canvas(mainFrame)
 mainCanvas.pack(side=LEFT, fill=BOTH, expand=True)
 
 #########################################################
 # instantiate class
+# the actual data grid
 dataGrid = updateGradesClass("st81623", mainCanvas)
 
 # add drop down list to frame
@@ -210,8 +254,8 @@ modCombobox["values"] = dataGrid.moduleIDs
 modCombobox.bind("<<ComboboxSelected>>", dataGrid.recreateFrame)
 modCombobox.pack(side=LEFT)
 
-updateButton = Button(topFrame, text="Update all", command=dataGrid.updateGrade)
-updateButton.pack(side=RIGHT)
+# updateButton = Button(topFrame, text="Update all", command=dataGrid.updateGrade)
+# updateButton.pack(side=RIGHT)
 
 #add scrollbar to mainFrame
 vScrbar = Scrollbar(mainFrame, orient=VERTICAL)
