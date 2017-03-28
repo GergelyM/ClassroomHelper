@@ -165,11 +165,11 @@ class updateGradesClass():
                     #     #self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
                     # add widget to grid at end
                     #self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
-                txt = ""
-                self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
-                #     #self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
-                # add widget to grid at end
-                self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
+                # txt = ""
+                # self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
+                # #     #self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
+                # # add widget to grid at end
+                # self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
         # add frame to canvas to make it scrollable
         self.master.create_window(0, 0, window=self.gridFrame, anchor=NW)
 
