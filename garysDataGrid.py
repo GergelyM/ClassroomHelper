@@ -244,7 +244,7 @@ mainCanvas.pack(side=LEFT, fill=BOTH, expand=True)
 #########################################################
 # instantiate class
 # the actual data grid
-dataGrid = updateGradesClass("st81623", mainCanvas)
+dataGrid = updateGradesClass("st38097", mainCanvas)
 
 # add drop down list to frame
 # get all modules related to teacherID in to an array
@@ -307,9 +307,6 @@ root.mainloop()
 #cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
 
 # sample data from DBv2
-# (1, 'st78598', 'Mr', 'Nielsen', 'Kendrick', '', 'p@ssword')
-# (2, 'st37935', 'Ms', 'Riddle', 'Johanna', '', 'p@ssword')
-# (3, 'st80293', 'Mr', 'Bernard', 'Calvin', '', 'p@ssword')
 # (4, 'st38097', 'Ms', 'Bridges', 'Danielle', '', 'p@ssword')
 # (5, 'st81623', 'Mr', 'Bernard', 'Tomas', '', 'p@ssword')
 
