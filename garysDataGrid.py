@@ -56,7 +56,7 @@ class field():
 
 class updateGradesClass():
     #variables
-    conn = sqlite3.connect("db/crDBv2.db")
+    conn = sqlite3.connect("db/crDBv2W10Demo.db")
     cursor = conn.cursor()
     grades = None
     # [[element] * numcols] * numrows
@@ -67,20 +67,35 @@ class updateGradesClass():
         self.gridFrame = Frame(self.master)
         self.teacherID = teacherID
         self.dbFetch()
-        #print(self.grades)
         self.moduleIDs = []
+        #self.setPerModule = []
         for item in self.grades:
-            if item[4] not in self.moduleIDs:
-                self.moduleIDs.append(item[4])
-        self.actModule = self.moduleIDs[0]
-        #print(self.moduleIDs)
-        #print(self.actModule)
+            setPerMtxt = str(item[4]) + " / " + str(item[1])
+            if setPerMtxt not in self.moduleIDs:
+                self.moduleIDs.append(setPerMtxt)
+        # print(self.moduleIDs)
+        # for item in self.grades:
+        #     if item[4] not in self.moduleIDs:
+        #         self.moduleIDs.append(item[4])
+        # self.actModule = self.moduleIDs[0]
+        self.actModule = self.retrieveModuleID( self.moduleIDs[0] )
+        # print( self.actModule )
         self.col = len(self.grades[0])
         self.row = len(self.grades)
         self.grid = [[0] * (self.col+1)] * (self.row + 1) # +1 because of header
 
     def setActModule(self, actMod):
         self.actModule = actMod
+
+    def retrieveModuleID(self, setPerModule):
+        return setPerModule[0:6]
+
+    def retrieveModuleInfo(self):
+        theModule = [self.actModule]
+        self.cursor.execute("SELECT * FROM module WHERE moduleID=?", theModule)
+        fetchData = self.cursor.fetchone()
+
+
 
     def dbFetch(self):
         #tID = "st81623"
@@ -106,13 +121,19 @@ class updateGradesClass():
     #   collect data for SQL update
     #   execute SQL
     #   commit DB if needed
+    # todo-Gary DONE
     ###################################################################
 
     def dataGrid(self):
         # create frame to encapsulate
         self.gridFrame = Frame(self.master)
         self.gridFrame.pack(side=LEFT, fill=BOTH, expand=True)
-        self.actModule = modCombobox.get()
+        setPerModule = modCombobox.get()
+        if setPerModule == "":
+            set = self.moduleIDs[0][-5:]
+        else :
+            set = setPerModule[-5:]
+        # print( set )
 
         for r in range(0, self.row):
             # set background color variable
@@ -137,7 +158,7 @@ class updateGradesClass():
             # fill up grid with widgets
             for c in range(0, self.col):
                 #print(str(self.col) +" : "+ str(abs(1-self.col)))
-                if self.actModule == "" or self.actModule == self.grades[r][4]:
+                if self.actModule == "" or self.actModule == self.grades[r][4] and set == self.grades[r][1]:
                     if c == 0:
                         self.grid[r][c] = Label(self.gridFrame, text=r, relief=FLAT, bg=bckg)
                         # add widget to grid at end
@@ -182,7 +203,9 @@ class updateGradesClass():
 
     #redraw the frame after modify
     def recreateFrame(self, event):
-        self.setActModule(modCombobox.get)
+        actMod = self.retrieveModuleID( modCombobox.get() )
+        self.setActModule( actMod )
+        # print( actMod  )
         self.gridFrame.destroy()
         self.dbFetch()
         self.dataGrid()
@@ -244,7 +267,9 @@ mainCanvas.pack(side=LEFT, fill=BOTH, expand=True)
 #########################################################
 # instantiate class
 # the actual data grid
-dataGrid = updateGradesClass("st38097", mainCanvas)
+# teachers with more than one set: st82277, st81623
+
+dataGrid = updateGradesClass("st81623", mainCanvas)
 
 # add drop down list to frame
 # get all modules related to teacherID in to an array
@@ -253,6 +278,16 @@ modCombobox = ttk.Combobox(topFrame, textvariable=dataGrid.moduleIDs)
 modCombobox["values"] = dataGrid.moduleIDs
 modCombobox.bind("<<ComboboxSelected>>", dataGrid.recreateFrame)
 modCombobox.pack(side=LEFT)
+
+#set combo box for further filtering
+# setCombobox = ttk.Combobox(topFrame, textvariable=dataGrid.moduleIDs)
+# setCombobox["values"] = dataGrid.moduleIDs
+# setCombobox.bind("<<ComboboxSelected>>", dataGrid.recreateFrame)
+# setCombobox.pack(side=LEFT)
+
+
+
+
 
 # updateButton = Button(topFrame, text="Update all", command=dataGrid.updateGrade)
 # updateButton.pack(side=RIGHT)
