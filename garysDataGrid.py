@@ -64,7 +64,7 @@ class updateGradesClass():
 
     def __init__(self, teacherID, master):
         self.master = master
-        self.gridFrame = Frame(self.master)
+        #self.gridFrame = Frame(self.master)
         self.teacherID = teacherID
         self.dbFetch()
         self.moduleIDs = []
@@ -137,23 +137,10 @@ class updateGradesClass():
 
         for r in range(0, self.row):
             # set background color variable
-            if r%2 != 0:
+            if r % 2 != 0:
                 bckg = "gray90"
             else:
                 bckg = "gray70"
-
-            #add header fields to row 0
-            # fieldsToShow = [None, "groupsetName", "year", "semester", "moduleCode", None, None, "grade", "gradeType",
-            #                 "studentID", None]
-            # if r == 0:
-            #     headerFields = []
-            #     i=0
-            #     #for field in fieldsToShow:
-            #     while i < len(fieldsToShow):
-            #         if fieldsToShow[i] != None:
-            #             headerFields.append( Label(self.gridFrame, text=fieldsToShow[i], relief=FLAT, bg=bckg) )
-            #             headerFields[i].config(relief=RAISED)
-            #             headerFields[i].grid(row=0, column=i, ipadx=10, ipady=5, sticky=W)
 
             # fill up grid with widgets
             for c in range(0, self.col):
@@ -175,22 +162,7 @@ class updateGradesClass():
                             self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT, bg=bckg)
                         # add widget to grid at end
                         self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
-                    #add button to each line
-                    # elif c == abs(1 - self.col):
-                    #     txt = "Update "+str(r)+":"+str(c)
-                    #     updVar = self.grid[r][7].get()
-                    #     self.grid[r][c] = Button(self.gridFrame, text=txt, command=lambda : self.updateGrade(updVar, self.grades[r][0]))
-                    # else:
-                    #     txt = ""
-                    #     self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
-                    #     #self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
-                    # add widget to grid at end
-                    #self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
-                # txt = ""
-                # self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
-                # #     #self.grid[r][c] = Label(self.gridFrame, text=txt, relief=FLAT)
-                # # add widget to grid at end
-                # self.grid[r][c].grid(row=r+1, column=c, ipadx=10, ipady=5, sticky=NSEW)
+
         # add frame to canvas to make it scrollable
         self.master.create_window(0, 0, window=self.gridFrame, anchor=NW)
 
@@ -218,16 +190,9 @@ class updateGradesClass():
     # update grade in DB
     def updateGrade(self, newGrade, gradeID):
         # body for batch update from top frame button
-        # dataPush = []
-        # i = 0
-        # for row in self.grid:
-        #     print(i, row[0], event.widget.get() )
-        #     #dataPush.append( ( int( row[0]['text'] ), int( row[7].get() ) ) )
-        #
-        #     i+=1
-        #print(dataPush)
+
         self.cursor.execute("SELECT grade FROM grade WHERE id=?", [gradeID])
-        print("UPDATE start :: new grade: " + str(newGrade) +" where grade ID: "+ str(gradeID))
+        print("UPDATE start >> new grade: " + str(newGrade) +", where grade ID: "+ str(gradeID))
         pushData = (int(newGrade), int(gradeID))
         print(pushData)
         self.cursor.execute("UPDATE grade SET grade=? WHERE id=?", pushData)
@@ -239,6 +204,7 @@ class updateGradesClass():
         self.conn.commit()
 
     # lambda argument_list: expression
+
 
 
 #########################################################
@@ -285,7 +251,7 @@ modCombobox.pack(side=LEFT)
 # setCombobox.bind("<<ComboboxSelected>>", dataGrid.recreateFrame)
 # setCombobox.pack(side=LEFT)
 
-
+#create Label for module info
 
 
 

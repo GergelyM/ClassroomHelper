@@ -35,6 +35,9 @@ class LoginHandler(object):
             self.userPassword = Upw
             self.loggedOn = self.login()
 
+
+
+
         def fetchUserPw(self):
             #this reads the object variables from __init__ method, to fetch data from DB
             newSq = ""
@@ -50,25 +53,26 @@ class LoginHandler(object):
             #this returns the stored password belongs to the userID
             return fetchedPw
 
-
         def validateInput(self):
-            returnVal = False
+            #returnVal = False
             dbPassword = self.fetchUserPw()
             if dbPassword == False:
-                self.loginMessage = "Login failed."
+                self.loginMessage = "Validate: Login failed."
+                print(self.loginMessage)
                 returnVal = False
             elif dbPassword != False: #may check for "" string with AND here also
                 if dbPassword == self.userPassword:
-                    self.loginMessage = "Authentication successful."
+                    self.loginMessage = "Validate: Authentication successful."
+                    print(self.loginMessage)
                     returnVal = self.userID
                 else:
-                    self.loginMessage = "Password mismatch."
+                    self.loginMessage = "Validate: Password mismatch."
                     returnVal = False
             else:
                 self.loginMessage = "Unknown error: No valid password retrieved."
+                print(self.loginMessage)
                 returnVal = False
             return returnVal
-
 
         def login(self):
             return self.validateInput()

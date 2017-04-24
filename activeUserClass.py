@@ -8,41 +8,55 @@
 from dbHandler import *
 
 class activeUserClass(object):
-        #class-wide shared variables
-        crDB = DbConn("db/crDB.db")
-        c = crDB.cursor
+        # class-wide shared variables
+        _crDB = DbConn("db/crDB.db")
+        _c = _crDB.cursor
+        # actual object variables _ means protected
+        _userType = ""
+        _userID = ""
+        _userName = ""
+        _userSurname = ""
+        _userEmail = ""
 
-        # records from 'student' table
-        # id, studentID, studentGender, studentSurname, studentName, studentEmail, studentPassword
-        # records from 'teacher' table
-        # id, teacherID, teacherTitle, teacherSurname, teacherName, teacherEmail, teacherPassword
+        def setUpObject(self, uid):
+            self.setUID(uid)
+            if self._userID[0:2].isnumeric():
+                self._userType = "student"
+            if self._userID[0:2] == "st":
+                self._userType = "teacher"
+            self.getUserData()
+            #print("userObject has been setup")
+            #print(self.getType())
 
-        userType = ""
-        userID = ""
-        userName = ""
-        userSurname = ""
-        userEmail = ""
-
-        # def __init__(self, uid):
-        #     self.userID = uid
-        #     if self.userID[0:2].isnumeric():
-        #         self.userType = "student"
-        #     if self.userID[0:2] == "st":
-        #         self.userType = "teacher"
+        def getUID(self):
+            return self._userID
 
         def setUID(self, uid):
-            self.userID = uid
-            if self.userID[0:2].isnumeric():
-                self.userType = "student"
-            if self.userID[0:2] == "st":
-                self.userType = "teacher"
+            self._userID = uid
+            if self._userID[0:2].isnumeric():
+                self._userType = "student"
+            if self._userID[0:2] == "st":
+                self._userType = "teacher"
             self.getUserData()
 
+        def getType(self):
+            return self._userType
+
+        def getName(self):
+            return self._userName
+
+        def getSurname(self):
+            return self._userSurname
+
+        def getFullname(self):
+            fullname = self._userName + " " + self._userSurname
+            return fullname
+
         def getUserData(self):
-            if self.userType == "student":
-                self.c.execute("SELECT studentSurname, studentName FROM student WHERE studentID ='" + self.userID + "'")
-            if self.userType == "teacher":
-                self.c.execute("SELECT teacherSurname, teacherName FROM teacher WHERE teacherID ='" + self.userID + "'")
-            fetchedData = self.c.fetchone()
-            self.userName = fetchedData[0]
-            self.userSurname = fetchedData[1]
+            if self._userType == "student":
+                self._c.execute("SELECT studentSurname, studentName FROM student WHERE studentID ='" + self._userID + "'")
+            if self._userType == "teacher":
+                self._c.execute("SELECT teacherSurname, teacherName FROM teacher WHERE teacherID ='" + self._userID + "'")
+            fetchedData = self._c.fetchone()
+            self._userName = fetchedData[0]
+            self._userSurname = fetchedData[1]
