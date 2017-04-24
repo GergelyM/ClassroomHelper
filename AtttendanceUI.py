@@ -1,4 +1,4 @@
-'''Warning, lots of testing, lots of experimenting to find the best way of doing things as well as'''
+def setAttendanceUI(userID):'''Warning, lots of testing, lots of experimenting to find the best way of doing things as well as'''
 
 import tkinter as tk
 from dbHandler import *
@@ -13,19 +13,7 @@ studentChecks = []
 studentIDs = []
 selectedGroupSet = 0
 
-#TO DELETE
-'''def getStudents(teacherID):
-    connect.execute('SELECT * FROM groupset WHERE teacherID = ?', [teacherID])
-    groupSets = connect.fetchall()
-    #print(len(groupSets))
-    i = 0
-    #for x in groupSets:        
-    details = groupSets[0]
-    setInfo = details[1], details[2], details[3], details[4]
-    print(setInfo)
-    return setInfo
-
-getStudents('st82277')'''
+teacherID = userID
 
 #Submit 
 def submit():
@@ -114,7 +102,7 @@ frame5.pack()
 
 #UI
 var.set('Select set')
-teacherID = "st82277" #selected teacher, can be changed for relevant teacherID when connected to main window
+#teacherID = "st82277" #selected teacher, can be changed for relevant teacherID when connected to main window
 choices = getModules(teacherID)
 groupSets = getGroupSets(teacherID)
 #print(choices[0])
@@ -128,33 +116,10 @@ introLabel2 = tk.Label(frame3, text="Present?").grid(column = 0,row = 0)
 #checkCmd = tk.IntVar()
 #checkCmd.set(0)
 
-'''for x in range (1, 7):
-    studentLabel = "label" + str(x)
-    studentCheckbox = "checkbox" + str(x)
-    print(studentLabel)
-    #checkCmd = tk.IntVar()
-    #test1 = checkCmd + str(x)
-    test1 = tk.IntVar()
-    #checkCmd.set(0)
-    studentLabel = tk.Label(frame2, text="Student: " + str(x)).grid(column=0,row = x)
-    studentCheckbox = tk.Checkbutton(frame2, text="Student: " + str(x), variable=test1, onvalue=1, offvalue=0).grid(column = 1, row = x)
-'''
-
 #UI
 button1 = tk.Button(frame5, text="Submit", command=submit) # Search button
 button1.pack(side='left', padx=5, pady=10) # Asthetic but necessary
 button2 = tk.Button(frame1, text="Search", command=search)
 button2.pack(side='left')
 
-'''test1 = tk.IntVar()
-checkbox1 = tk.Checkbutton(frame3, text="Student 1", variable=test1, onvalue=1, offvalue=0).grid(column = 1, row = 1)
-test2 = tk.IntVar()
-checkbox2 = tk.Checkbutton(frame3, text="Student 2", variable=test2, onvalue=1, offvalue=0).grid(column = 1, row = 2)
-test3 = tk.IntVar()
-checkbox3 = tk.Checkbutton(frame3, text="Student 3", variable=test3, onvalue=1, offvalue=0).grid(column = 1, row = 3)
-test4 = tk.IntVar()
-checkbox4 = tk.Checkbutton(frame3, text="Student 4", variable=test4, onvalue=1, offvalue=0).grid(column = 1, row = 4)
-test5 = tk.IntVar()
-checkbox5 = tk.Checkbutton(frame3, text="Student 5", variable=test5, onvalue=1, offvalue=0).grid(column = 1, row = 5)
-'''
 root.mainloop() # Run 

@@ -1,3 +1,4 @@
+def teacherModuleView(userID):
 '''As things stand i can not find a way to clear the label of the text currently in it
 Will continue looking for a way to do it but if not I may need to change it to a different
 form of text box.
@@ -15,7 +16,7 @@ Note: try with module M03010
 It starting to come toghether :D
 by David'''
 
-teacherID = 'st82277' #Fixed teacher ID for now
+teacherID = userID #Fixed teacher ID for now
 
 #TODO Everyone make more dummy data in the DB
 
