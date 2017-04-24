@@ -90,7 +90,7 @@ top1Button2.grid(row=3, column=2)
 login.attributes('-topmost', True) #brings toplevel window to the top
 login.focus_force()  #gives focus to toplevel window
 login.grab_set() #disables main window until toplevel closed or given back by login.grab_release()
-#root.wait_window(login)
+root.wait_window(login)
 
 #
 # Login window code ends here.
@@ -173,7 +173,8 @@ elif activeUser.getType() == "student":
     button6.bind("<Enter>", lambda _: setSBarText("See my grades"))
     button6.bind("<Leave>", lambda _: setSBarText(""))
 
-##menuFrame.update()
+menuFrame.update()
+root.mainloop()
 
 # button.state( ["disabled"] )
 # button.instate( ["disabled"] )  #returns true/false depends of the state of button widget
