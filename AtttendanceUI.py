@@ -3,14 +3,17 @@
 import tkinter as tk
 from dbHandler import *
 import coreFunctionsSQL as core
+import sqlite3
 
-attendanceDB = DbConn("db/crDBv2.db")
-connect = attendanceDB.cursor
+#attendanceDB = DbConn("db/crDBv2.db")
+attendanceDB = sqlite3.connect("db/crDBv2.db")
+connect = attendanceDB.cursor()
 
 studentChecks = []
 studentIDs = []
 selectedGroupSet = 0
-    
+
+#TO DELETE
 '''def getStudents(teacherID):
     connect.execute('SELECT * FROM groupset WHERE teacherID = ?', [teacherID])
     groupSets = connect.fetchall()
@@ -24,11 +27,10 @@ selectedGroupSet = 0
 
 getStudents('st82277')'''
 
+#Submit 
 def submit():
+    #TESTING CODE FOR DUMMY DATA
     '''print("Submit button pressed")
-    #for x in range (1, 7):
-     #   ifPresent = "checkCmd" + str(x).get()
-      #  print("Student " + x + " has value: " + ifPresent)
     print(test1.get())
     print(test2.get())
     print(test3.get())
@@ -40,28 +42,31 @@ def submit():
     #connect.execute('DELETE FROM attendance')
     for x in range(0, len(studentChecks)):
         connect.execute('INSERT INTO attendance (attendTotal, present, attendDate, studentID, groupsetID) VALUES (0,?,?,?,?)', [studentChecks[x].get(), theDate, studentIDs[x], selectedGroupSet])            
+
         #print(str(selectedGroupSet) + ' ' + studentIDs[x] + " " + str(studentChecks[x].get()))
+    attendanceDB.commit()
     connect.execute('SELECT * FROM attendance')
     attendance = connect.fetchall()
     print(attendance)
-    
+
+#Searching for students in a given set
 def search():
     for widget in frame4.winfo_children():
         widget.destroy()
     del studentChecks[:]
     del studentIDs[:]
-    print("Search button pressed")
+    #print("Search button pressed")
     testVar = var.get()
-    print(testVar)
+    #print(testVar)
     myIndex = choices.index(testVar)
-    print(myIndex)
-    print(groupSets[myIndex][0])
+    #print(myIndex)
+    #print(groupSets[myIndex][0])
     global selectedGroupSet
     selectedGroupSet = groupSets[myIndex][0]
     connect.execute('SELECT DISTINCT s.studentID, studentName, studentSurname FROM grade d INNER JOIN student s ON d.studentID=s.studentID WHERE groupsetID=? ORDER BY studentSurname', [selectedGroupSet])
     #connect.execute('SELECT DISTINCT groupsetID, studentID from grade where groupsetID=? ORDER BY studentID', [selectedGroupSet])
     students = connect.fetchall()
-    print(students)
+    #print(students)
     idx = 0;
     for x in students:
         studentChecks.append(tk.IntVar())
@@ -72,7 +77,7 @@ def search():
         idx += 1
     #print(theMenu.index())
         
-
+#Returns modules teacher teaches for drop down menu
 def getModules(teacherID):
     connect.execute('SELECT * FROM groupset WHERE teacherID = ? ORDER BY groupsetID', [teacherID])
     modules = connect.fetchall()
@@ -82,19 +87,20 @@ def getModules(teacherID):
         i += 1
     return modules
 
+#Eventually returns all students for given groupset
 def getGroupSets(teacherID):
     connect.execute('SELECT groupsetID FROM groupset WHERE teacherID = ? ORDER BY groupsetID', [teacherID])
     groupSets = connect.fetchall()
     return groupSets
 
-    
+#UI    
 root = tk.Tk()
 root.geometry("%dx%d+%d+%d" % (630, 250, 100, 20))
 root.title("Attendance Register")
 var = tk.StringVar(root)
 
 
-
+#UI
 frame1 = tk.Frame(root)
 frame1.pack()
 frame2 = tk.Frame(root)
@@ -106,8 +112,9 @@ frame4.pack()
 frame5 = tk.Frame(root)
 frame5.pack()
 
+#UI
 var.set('Select set')
-teacherID = "st82277"
+teacherID = "st82277" #selected teacher, can be changed for relevant teacherID when connected to main window
 choices = getModules(teacherID)
 groupSets = getGroupSets(teacherID)
 #print(choices[0])
@@ -133,7 +140,7 @@ introLabel2 = tk.Label(frame3, text="Present?").grid(column = 0,row = 0)
     studentCheckbox = tk.Checkbutton(frame2, text="Student: " + str(x), variable=test1, onvalue=1, offvalue=0).grid(column = 1, row = x)
 '''
 
-
+#UI
 button1 = tk.Button(frame5, text="Submit", command=submit) # Search button
 button1.pack(side='left', padx=5, pady=10) # Asthetic but necessary
 button2 = tk.Button(frame1, text="Search", command=search)
