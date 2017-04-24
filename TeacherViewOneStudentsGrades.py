@@ -93,6 +93,18 @@ class Display(object):
         self.student.getinfoforteacher(self.teacher)
 
 
+        for i in self.teacher.sets:
+            self.c.execute("SELECT gradeType FROM grade WHERE studentID = '" + self.studentID + "' and groupsetID = '" + str(i[0]) + "'" )
+            self.grade.append(self.c.fetchall())
+
+        self.displayLabels()
+
+    # Produces a label for each grade
+    def displayLabels(self):
+        self.bottomFrame.pack_forget()
+        self.bottomFrame = Frame(self.mainFrame, bg="snow")
+        self.bottomFrame.pack(fill=X, expand=1, side=BOTTOM, anchor=N)
+
         # Headers for the grade columns
         self.mName = Label(self.bottomFrame, text="Module Name", bg="grey52")
         self.mCode = Label(self.bottomFrame, text="Module Code", bg="grey52")
@@ -110,14 +122,6 @@ class Display(object):
         self.mSemester.grid(row=2, column=5, sticky=W + E)
         self.mTeacher.grid(row=2, column=6, sticky=W + E)
 
-        for i in self.teacher.sets:
-            self.c.execute("SELECT gradeType FROM grade WHERE studentID = '" + self.studentID + "' and groupsetID = '" + str(i[0]) + "'" )
-            self.grade.append(self.c.fetchall())
-
-        self.displayLabels()
-
-    # Produces a label for each grade
-    def displayLabels(self):
 
         c = 0
         for i in self.student.userModuleCode:
