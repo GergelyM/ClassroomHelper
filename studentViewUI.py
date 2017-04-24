@@ -65,7 +65,7 @@ from dbHandler import *
 
 class Student(object):
 
-    crDB = DbConn("db/crDB.db")
+    crDB = DbConn("db/crDBv2.db")
     c = crDB.cursor
 
     def __init__(self):
@@ -81,6 +81,11 @@ class Student(object):
         self.userTeacherName = []
         self.userTeacherSurname = []
         self.usergroupsetID = []
+        self.gradeAssignment = []
+        self.gradeExam = []
+        self.gradeAttendance = []
+        self.templist = []
+        self.templist2 = []
 
     def setID(self, userID):
         self.userID = userID
@@ -94,6 +99,8 @@ class Student(object):
         self.userSurname = self.c.fetchone()[0]
         self.c.execute("SELECT groupsetID FROM grade WHERE studentID = '" + self.userID + "'")
         self.usergroupsetID = self.c.fetchall()
+        self.usergroupsetID = list(set(self.usergroupsetID))
+
 
         # Gets info for each module set
         c = 0
@@ -102,8 +109,36 @@ class Student(object):
             self.userModuleCode.append(self.c.fetchone())
             self.c.execute("SELECT moduleName FROM module WHERE moduleCode = '" + self.userModuleCode[c][0] + "'")
             self.userModuleNames.append(self.c.fetchone())
-            self.c.execute("SELECT gradeType FROM grade WHERE studentID = '" + self.userID + "'")
-            self.userGrade.append(self.c.fetchone())
+            self.c.execute("SELECT grade FROM grade WHERE studentID = '" + self.userID + "' and groupsetID = '" + str(i[0]) + "' and gradeType = 'assignment'")
+            self.gradeAssignment.append(self.c.fetchall())
+            for j in self.gradeAssignment:
+                a=1
+                for k in j:
+                    if a != len(j):
+                        while a < len(j):
+                            k = str(k[0] + j[a][0])
+                            a += 1
+                        k = int(k)/a
+            self.c.execute("SELECT grade FROM grade WHERE studentID = '" + self.userID + "' and groupsetID = '" + str(i[0]) + "' and gradeType = 'exam'")
+            self.gradeExam.append(self.c.fetchall())
+            for j in self.gradeExam:
+                a=1
+                for k in j:
+                    if a != len(j):
+                        while a < len(j):
+                            k = str(k[0] + j[a][0])
+                            a += 1
+                        k = int(k)/a
+            self.c.execute("SELECT grade FROM grade WHERE studentID = '" + self.userID + "' and groupsetID = '" + str(i[0]) + "' and gradeType = 'attendance'")
+            self.gradeAttendance.append(self.c.fetchall())
+            for j in self.gradeAttendance:
+                a=1
+                for k in j:
+                    if a != len(j):
+                        while a < len(j):
+                            k = str(k[0] + j[a][0])
+                            a += 1
+                        k = int(k)/a
             self.c.execute("SELECT year FROM groupset WHERE groupsetID = '" + str(i[0]) + "'")
             self.userYear.append(self.c.fetchone())
             self.c.execute("SELECT semester FROM groupset WHERE groupsetID = '" + str(i[0]) + "'")
@@ -116,6 +151,74 @@ class Student(object):
             self.userTeacherSurname.append(self.c.fetchone())
             c+=1
 
+    def getinfoforteacher(self, teacher):
+
+        # Gets the student name and any sets they are in
+        self.c.execute("SELECT studentName FROM student WHERE studentID = '" + self.userID + "'")
+        self.userName = self.c.fetchone()[0]
+        self.c.execute("SELECT studentSurname FROM student WHERE studentID = '" + self.userID + "'")
+        self.userSurname = self.c.fetchone()[0]
+        for i in teacher.sets:
+            self.c.execute("SELECT groupsetID FROM grade WHERE studentID = '" + self.userID + "' and groupsetID = '" + str(i[0]) + "'")
+            self.templist.append(self.c.fetchall())
+        for i in self.templist:
+            if i != []:
+                self.templist2.append(i)
+        for i in self.templist2:
+            c = 0
+            for j in i:
+                self.usergroupsetID.append(j[0])
+        self.usergroupsetID = list(set(self.usergroupsetID))
+
+
+        # Gets info for each module set
+        c = 0
+        for i in self.usergroupsetID:
+            self.c.execute("SELECT moduleCode FROM groupset WHERE groupsetID = '" + str(i) + "'")
+            self.userModuleCode.append(self.c.fetchone())
+            self.c.execute("SELECT moduleName FROM module WHERE moduleCode = '" + self.userModuleCode[c][0] + "'")
+            self.userModuleNames.append(self.c.fetchone())
+            self.c.execute("SELECT grade FROM grade WHERE studentID = '" + self.userID + "' and groupsetID = '" + str(i) + "' and gradeType = 'assignment'")
+            self.gradeAssignment.append(self.c.fetchall())
+            for j in self.gradeAssignment:
+                a=1
+                for k in j:
+                    if a != len(j):
+                        while a < len(j):
+                            k = str(k[0] + j[a][0])
+                            a += 1
+                        k = int(k)/a
+            self.c.execute("SELECT grade FROM grade WHERE studentID = '" + self.userID + "' and groupsetID = '" + str(i) + "' and gradeType = 'exam'")
+            self.gradeExam.append(self.c.fetchall())
+            for j in self.gradeExam:
+                a=1
+                for k in j:
+                    if a != len(j):
+                        while a < len(j):
+                            k = str(k[0] + j[a][0])
+                            a += 1
+                            k = int(k)/a
+            self.c.execute("SELECT grade FROM grade WHERE studentID = '" + self.userID + "' and groupsetID = '" + str(i) + "' and gradeType = 'attendance'")
+            self.gradeAttendance.append(self.c.fetchall())
+            for j in self.gradeAttendance:
+                a=1
+                for k in j:
+                    if a != len(j):
+                        while a < len(j):
+                            k = str(k[0] + j[a][0])
+                            a += 1
+                        k = int(k)/a
+            self.c.execute("SELECT year FROM groupset WHERE groupsetID = '" + str(i) + "'")
+            self.userYear.append(self.c.fetchone())
+            self.c.execute("SELECT semester FROM groupset WHERE groupsetID = '" + str(i) + "'")
+            self.userSemester.append(self.c.fetchone())
+            self.c.execute("SELECT teacherID FROM groupset WHERE groupsetID = '" + str(i) + "'")
+            self.userTeacherID.append(self.c.fetchone())
+            self.c.execute("SELECT teacherName FROM teacher WHERE teacherID = '" + self.userTeacherID[c][0] + "'")
+            self.userTeacherName.append(self.c.fetchone())
+            self.c.execute("SELECT teacherSurname FROM teacher WHERE teacherID = '" + self.userTeacherID[c][0] + "'")
+            self.userTeacherSurname.append(self.c.fetchone())
+            c+=1
 
 
 
@@ -135,6 +238,7 @@ def displaystudentview(student, mainFrame):
     # Column Titles
     mName = Label(mainFrame, text="Module Name", bg="grey52")
     mCode = Label(mainFrame, text="Module Code", bg="grey52")
+    mGradeType = Label(mainFrame, text="Grade Type", bg="grey52")
     mGrade = Label(mainFrame, text="Grade", bg="grey52")
     mYear = Label(mainFrame, text="Year", bg="grey52")
     mSemester = Label(mainFrame, text="Semester", bg="grey52")
@@ -142,17 +246,21 @@ def displaystudentview(student, mainFrame):
 
     mName.grid(row=2, column=0, sticky=W+E)
     mCode.grid(row=2, column=1, sticky=W+E)
-    mGrade.grid(row=2, column=2, sticky=W+E)
-    mYear.grid(row=2, column=3, sticky=W+E)
-    mSemester.grid(row=2, column=4, sticky=W+E)
-    mTeacher.grid(row=2, column=5, sticky=W+E)
+    mGradeType.grid(row=2, column=2, sticky=W+E)
+    mGrade.grid(row=2, column=3, sticky=W+E)
+    mYear.grid(row=2, column=4, sticky=W+E)
+    mSemester.grid(row=2, column=5, sticky=W+E)
+    mTeacher.grid(row=2, column=6, sticky=W+E)
 
     # Aesthetics
     alabel = Label(mainFrame, text=" ", bg="chartreuse3")
-    alabel.grid(row=1, columnspan=6, sticky=W+E)
+    alabel.grid(row=1, columnspan=7, sticky=W+E)
 
     alabel2 = Label(mainFrame, text=" ", bg="chartreuse3")
-    alabel2.grid(row=0, column=3, columnspan=3, sticky=W+E)
+    alabel2.grid(row=0, column=3, columnspan=4, sticky=W+E)
+
+
+
 
 
 # Creates and displays a label for each module taken by the student
@@ -162,7 +270,17 @@ def displayLabels(student, mainFrame):
     for i in student.userModuleCode:
         uP = Label(mainFrame, text=student.userModuleNames[c][0], bg="snow")  # module name
         uPCode = Label(mainFrame, text=student.userModuleCode[c][0], bg="snow")  # moduleCode
-        uPGrade = Label(mainFrame, text=student.userGrade[c][0], bg="snow")  # Grade
+        uPGradeType = Label(mainFrame, text="Assignment", bg="snow")  # GradeType
+        if student.gradeAssignment[c][0][0] >= 70:
+            uPGrade = Label(mainFrame, text=student.gradeAssignment[c][0], bg="green3")  # Grade
+        elif student.gradeAssignment[c][0][0] >= 60:
+            uPGrade = Label(mainFrame, text=student.gradeAssignment[c][0], bg="OliveDrab1")
+        elif student.gradeAssignment[c][0][0] >= 50:
+            uPGrade = Label(mainFrame, text=student.gradeAssignment[c][0], bg="yellow2")
+        elif student.gradeAssignment[c][0][0] >= 40:
+            uPGrade = Label(mainFrame, text=student.gradeAssignment[c][0], bg="orange2")
+        elif student.gradeAssignment[c][0][0] < 40:
+            uPGrade = Label(mainFrame, text=student.gradeAssignment[c][0], bg="firebrick1")
         uPyear = Label(mainFrame, text=student.userYear[c][0], bg="snow")  # Year
         uPSemester = Label(mainFrame, text=student.userSemester[c][0], bg="snow")  # Semester
         uPTeacher = Label(mainFrame, text=student.userTeacherName[c][0] + " " + student.userTeacherSurname[c][0],
@@ -170,12 +288,75 @@ def displayLabels(student, mainFrame):
 
         uP.grid(row=3 + c, column=0, sticky=W + E)
         uPCode.grid(row=3 + c, column=1, sticky=W + E)
-        uPGrade.grid(row=3 + c, column=2, sticky=W + E)
-        uPyear.grid(row=3 + c, column=3, sticky=W + E)
-        uPSemester.grid(row=3 + c, column=4, sticky=W + E)
-        uPTeacher.grid(row=3 + c, column=5, sticky=W + E)
+        uPGradeType.grid(row=3 + c, column=2, sticky=W + E)
+        uPGrade.grid(row=3 + c, column=3, sticky=W + E)
+        uPyear.grid(row=3 + c, column=4, sticky=W + E)
+        uPSemester.grid(row=3 + c, column=5, sticky=W + E)
+        uPTeacher.grid(row=3 + c, column=6, sticky=W + E)
 
         c += 1
+
+    d = 0
+    for i in student.userModuleCode:
+        uP = Label(mainFrame, text=student.userModuleNames[d][0], bg="snow")  # module name
+        uPCode = Label(mainFrame, text=student.userModuleCode[d][0], bg="snow")  # moduleCode
+        uPGradeType = Label(mainFrame, text="Exam", bg="snow")  # GradeType
+        if student.gradeExam[d][0][0] >= 70:
+            uPGrade = Label(mainFrame, text=student.gradeExam[d][0], bg="green3")  # Grade
+        elif student.gradeExam[d][0][0] >= 60:
+            uPGrade = Label(mainFrame, text=student.gradeExam[d][0], bg="OliveDrab1")
+        elif student.gradeExam[d][0][0] >= 50:
+            uPGrade = Label(mainFrame, text=student.gradeExam[d][0], bg="yellow2")
+        elif student.gradeExam[d][0][0] >= 40:
+            uPGrade = Label(mainFrame, text=student.gradeExam[d][0], bg="orange2")
+        elif student.gradeExam[d][0][0] < 40:
+            uPGrade = Label(mainFrame, text=student.gradeExam[d][0], bg="firebrick1")
+        uPyear = Label(mainFrame, text=student.userYear[d][0], bg="snow")  # Year
+        uPSemester = Label(mainFrame, text=student.userSemester[d][0], bg="snow")  # Semester
+        uPTeacher = Label(mainFrame, text=student.userTeacherName[d][0] + " " + student.userTeacherSurname[d][0],
+                          bg="snow")  # Teacher
+
+        uP.grid(row=3 + c, column=0, sticky=W + E)
+        uPCode.grid(row=3 + c, column=1, sticky=W + E)
+        uPGradeType.grid(row=3 + c, column=2, sticky=W + E)
+        uPGrade.grid(row=3 + c, column=3, sticky=W + E)
+        uPyear.grid(row=3 + c, column=4, sticky=W + E)
+        uPSemester.grid(row=3 + c, column=5, sticky=W + E)
+        uPTeacher.grid(row=3 + c, column=6, sticky=W + E)
+
+        c += 1
+        d += 1
+
+    e = 0
+    for i in student.userModuleCode:
+        uP = Label(mainFrame, text=student.userModuleNames[e][0], bg="snow")  # module name
+        uPCode = Label(mainFrame, text=student.userModuleCode[e][0], bg="snow")  # moduleCode
+        uPGradeType = Label(mainFrame, text="Attendance", bg="snow")  # GradeType
+        if student.gradeAttendance[e][0][0] >= 70:
+            uPGrade = Label(mainFrame, text=student.gradeAttendance[e][0], bg="green3")  # Grade
+        elif student.gradeAttendance[e][0][0] >= 60:
+            uPGrade = Label(mainFrame, text=student.gradeAttendance[e][0], bg="OliveDrab1")
+        elif student.gradeAttendance[e][0][0] >= 50:
+            uPGrade = Label(mainFrame, text=student.gradeAttendance[e][0], bg="yellow2")
+        elif student.gradeAttendance[e][0][0] >= 40:
+            uPGrade = Label(mainFrame, text=student.gradeAttendance[e][0], bg="orange2")
+        elif student.gradeAttendance[e][0][0] < 40:
+            uPGrade = Label(mainFrame, text=student.gradeAttendance[e][0], bg="firebrick1")
+        uPyear = Label(mainFrame, text=student.userYear[e][0], bg="snow")  # Year
+        uPSemester = Label(mainFrame, text=student.userSemester[e][0], bg="snow")  # Semester
+        uPTeacher = Label(mainFrame, text=student.userTeacherName[e][0] + " " + student.userTeacherSurname[e][0],
+                          bg="snow")  # Teacher
+
+        uP.grid(row=3 + c, column=0, sticky=W + E)
+        uPCode.grid(row=3 + c, column=1, sticky=W + E)
+        uPGradeType.grid(row=3 + c, column=2, sticky=W + E)
+        uPGrade.grid(row=3 + c, column=3, sticky=W + E)
+        uPyear.grid(row=3 + c, column=4, sticky=W + E)
+        uPSemester.grid(row=3 + c, column=5, sticky=W + E)
+        uPTeacher.grid(row=3 + c, column=6, sticky=W + E)
+
+        c += 1
+        e += 1
 
 
 
